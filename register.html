@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Brokefolio</title>
+</head>
+<body>
+    <div class="header">
+            <p style="background-color: #594273;">Brokefolio</p>
+            <div class="header-buttons">
+                <a href="login.html"><button>Giriş Yap</button></a>
+                <a href="register.html"><button>Kayıt Ol</button></a>
+            </div>
+    </div>
+    <div class="body">
+        <div class="login-form">
+            <form id="registerForm">
+                <p class="big-text">Brokefolio'ya Kayıt Ol!</p>
+                <div class="half-input">
+                <input class="first" placeholder="İsim" type="text" name="name" id="name">
+                <input placeholder="Soyisim" type="text" name="surname" id="surname">
+                </div>
+                <input placeholder="Kullanıcı Adı" type="text" name="username" id="username">
+                <input placeholder="E-mail" type="email" name="email" id="email">
+                <input placeholder="Şifre" type="password" name="password" id="password" onkeyup="check();">
+                <input placeholder="Şifre" type="password" name="confirm_password" id="confirm_password" onkeyup='check();'>
+                <span id='confirmPass'></span>
+                <status-popup></status-popup>
+                <button class="long-button">Giriş Yap</button>
+                <p class="forgor">Zaten Kayıtlı mısın? <a href="login.html">Hemen Giriş Yap!</a></p>
+            </form>    
+        </div>
+    </div>
+    <script src="js/register.js"></script>
+    <script src="js/status-popup.js"></script>
+      <script>
+    var check = function() {
+      if (document.getElementById('password').value ==
+          document.getElementById('confirm_password').value){
+        document.getElementById('confirmPass').style.color = 'green';
+        document.getElementById('confirmPass').innerHTML = 'Passwords Matching';
+      } else {
+        document.getElementById('confirmPass').style.color = 'red';
+        document.getElementById('confirmPass').innerHTML = 'Confirm Password Not Matching';
+      }
+    }
+  </script>
+</body>
+</html>

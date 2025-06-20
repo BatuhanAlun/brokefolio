@@ -18,9 +18,12 @@ func main() {
 	router := http.NewServeMux()
 
 	registerHandler := handlers.NewRegisterHandler(db)
+	loginHandler := handlers.NewLoginHandler(db)
+	mailHandler := handlers.NewMailHandler(db)
 
-	router.HandleFunc("POST /api/login", handlers.LoginHandler)
-	router.HandleFunc("/api/register", registerHandler.RegisterHandler)
+	router.HandleFunc("POST /api/login", loginHandler.LoginHandler)
+	router.HandleFunc("POST /api/register", registerHandler.RegisterHandler)
+	router.HandleFunc("POST /api/forgetPassword", mailHandler.MailResetHandler)
 
 	allowedOrigins := os.Getenv("ALLOWED_ORIGINS")
 	if allowedOrigins == "" {
