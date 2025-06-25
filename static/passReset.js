@@ -23,7 +23,7 @@ resetForm.addEventListener('submit', async (event) => {
 
 
         if (response.ok) {
-            myStatusPopup.show(true,result.message,2000);
+            myStatusPopup.show("success",result.message,2000);
 
 
             setTimeout(function(){
@@ -39,11 +39,11 @@ resetForm.addEventListener('submit', async (event) => {
             }catch(jsonError){
                 console.error('Failed to parse error JSON', jsonError)
             }
-            myStatusPopup.show(false, errorMessage, 2000)
+            myStatusPopup.show("error", errorMessage, 2000)
         }
 
     }catch(error){
         console.error('Error:',error);
-        myStatusPopup.show(false,'Something Went Wrong!',2000);
+        myStatusPopup.show("error",'Something Went Wrong!',2000);
     }
 });

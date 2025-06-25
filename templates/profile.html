@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/changestyle.css">
+    <!-- <link rel="stylesheet" href="/static/style.css"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Brokefolio - Profil</title>
+</head>
+<body>
+    <div class="header">
+        <p>Brokefolio</p>
+        <div class="header-buttons">
+            <a href="/profile"><button>Profilim</button></a>
+            <a href="/portfolio"><button>Portföy</button></a>
+            <a href="/market"><button>Piyasa</button></a>
+            <a href="/logout"><button><i class="fas fa-sign-out-alt"></i> Çıkış Yap</button></a>
+        </div>
+    </div>
+
+    <div class="body">
+        <div class="profile-page-container">
+            <div class="profile-header">
+                <div class="profile-avatar-section">
+                    <img id="avatarImage" src="{{.AvatarURL}}" alt="Profil Avatar" class="profile-avatar">
+                    
+                    <div class="avatar-edit-overlay" id="avatarEditOverlay">
+                        <input type="file" id="avatarUploadInput" accept="image/*" style="display: none;">
+                        <label for="avatarUploadInput" class="custom-avatar-upload-button">
+                            <i class="fas fa-camera"></i>
+                        </label>
+                    </div>
+                </div>
+                <div class="profile-details-header">
+                    <p class="profile-username" id="profileUsernameDisplay">@{{.Username}}</p>
+                    <p class="profile-email" id="profileEmailDisplay">{{.Email}}</p>
+                </div>
+            </div>
+
+            <div class="user-info-grid">
+                <div class="info-item">
+                    <p class="label">Ad:</p>
+                    <span id="profileNameDisplay">{{.Name}}</span>
+                    <input type="text" id="profileNameInput" class="edit-input" style="display: none;">
+                </div>
+                <div class="info-item">
+                    <p class="label">Soyad:</p>
+                    <span id="profileSurnameDisplay">{{.Surname}}</span>
+                    <input type="text" id="profileSurnameInput" class="edit-input" style="display: none;">
+                </div>
+                <div class="info-item">
+                    <p class="label">Kullanıcı Adı:</p>
+                    <span id="profileUsernameEditableDisplay">{{.Username}}</span>
+                    <input type="text" id="profileUsernameInput" class="edit-input" style="display: none;">
+                </div>
+                <div class="info-item">
+                    <p class="label">E-posta:</p>
+                    <span id="profileEmailEditableDisplay">{{.Email}}</span>
+                    <input type="email" id="profileEmailInput" class="edit-input" style="display: none;">
+                </div>
+            </div>
+
+            <div class="profile-action-buttons">
+                <button id="editProfileBtn" class="long-button edit-button"><i class="fas fa-pencil-alt"></i> Profili Düzenle</button>
+                <button id="saveProfileBtn" class="long-button save-button" style="display: none;"><i class="fas fa-save"></i> Değişiklikleri Kaydet</button>
+                <button id="cancelEditBtn" class="long-button cancel-button" style="display: none;"><i class="fas fa-times-circle"></i> İptal</button>
+                <button id="changePasswordBtn" class="long-button password-button"><i class="fas fa-lock"></i> Şifre Değiştir</button>
+                <button id="deleteAccountBtn" class="long-button delete-button"><i class="fas fa-trash-alt"></i> Hesabı Sil</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <h3>Hesabı Silmek İstediğinize Emin Misiniz?</h3>
+            <p>Bu işlem geri alınamaz.</p>
+            <div class="modal-actions">
+                <button id="cancelDeleteBtn" class="modal-button cancel-button">İptal</button>
+                <button id="confirmDeleteBtn" class="modal-button confirm-delete-button">Hesabı Sil</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="popMessage" class="pop-message">
+        <span class="pop-icon"></span>
+        <span class="pop-text"></span>
+        <span class="pop-spinner"><i class="fas fa-spinner fa-spin"></i></span>
+    </div>
+
+
+    <script src="/static/popup-message.js"></script>
+    <script type="module" src="/static/profile.js"></script>
+</body>
+</html>

@@ -1,0 +1,640 @@
+/* General Body and Container Styles */
+body {
+    margin: 0;
+    background-color: #2E1A47; /* Your original deep purple background */
+    color: white; /* Your original white text */
+    font-family: 'Inter', sans-serif; /* A modern, clean font */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    line-height: 1.6; /* Improve readability */
+}
+a {
+    text-decoration: none;
+}
+
+/* Global Box Sizing for consistent layout */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+/* Header Styles */
+.header {
+    display: flex;
+    background-color: #594273; /* Your original header color */
+    justify-content: space-between;
+    align-items: center;
+    height: 72px; /* Your original header height */
+    padding: 0 20px; /* Horizontal padding */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    width: 100%;
+    box-sizing: border-box; /* Ensures padding is included in width */
+}
+
+.header p {
+    font-size: 32px; /* Your original logo text size */
+    font-weight: 700;
+    margin: 0; /* Remove default paragraph margin */
+    color: white; /* Logo text color */
+}
+
+.header-buttons {
+    display: flex;
+    gap: 15px;
+}
+
+.header button {
+    color: white;
+    background-color: #B76BC4; /* Your original button color */
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.header button:hover {
+    background-color: #A05BB0;
+    transform: translateY(-2px);
+}
+
+/* Main Body content wrapper (for centering forms/general content) */
+.body {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers content horizontally */
+    flex-grow: 1; /* Allows the body to expand and push footer down */
+    padding: 20px; /* Overall padding for the content area */
+    box-sizing: border-box;
+    justify-content: flex-start; /* Aligns content to the top within the flex container */
+}
+
+/* Generic Long Button Style (for general use, e.g., auth forms, profile action buttons) */
+.long-button {
+    height: 60px; /* Example height */
+    font-size: 20px; /* Example font size */
+    display: flex; /* Makes the icon and text align */
+    align-items: center;
+    justify-content: center;
+    gap: 12px; /* Space between icon and text */
+    background-color: #B76BC4; /* Default button color */
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box; /* Ensure padding/border don't add to width/height */
+}
+
+.long-button:hover {
+    background-color: #A05BB0;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Custom Confirmation Modal Styles */
+.modal { /* Changed from .modal-overlay to .modal to match HTML */
+    display: none; /* Controlled by JS to 'flex' */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+}
+
+.modal.active { /* Changed from .modal-overlay.active to .modal.active */
+    display: flex;
+    opacity: 1;
+}
+
+.modal-content {
+    background-color: #3E245F;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    max-width: 450px;
+    width: 90%;
+    text-align: center;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.modal.active .modal-content { /* Changed from .modal-overlay.active to .modal.active */
+    opacity: 1;
+    transform: scale(1);
+}
+
+.modal-title { /* HTML has h3, not modal-title class, but this can be used if you add the class */
+    font-size: 28px;
+    font-weight: 700;
+    color: #B76BC4;
+    margin-bottom: 20px;
+}
+/* Directly target h3 within modal-content */
+.modal-content h3 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #B76BC4;
+    margin-bottom: 20px;
+}
+
+.modal-message {
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+/* Directly target p within modal-content */
+.modal-content p {
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+.modal-button { /* Changed from .modal-btn to .modal-button to match HTML */
+    padding: 15px 30px;
+    height: 55px;
+    min-width: 140px;
+    border-radius: 10px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.modal-button:focus-visible {
+    outline: 2px solid #00BFFF;
+    outline-offset: 2px;
+}
+
+.modal-button.cancel-button { /* Changed from .modal-cancel-btn */
+    background-color: #594273;
+    color: white;
+}
+
+.modal-button.cancel-button:hover {
+    background-color: #4C2D70;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.35);
+}
+
+.modal-button.confirm-delete-button { /* Changed from .modal-confirm-btn */
+    background-color: #E74C3C;
+    color: white;
+}
+
+.modal-button.confirm-delete-button:hover {
+    background-color: #C0392B;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.35);
+}
+
+/* Profile Page Specific Container (the main content card) */
+.profile-page-container { /* Removed .full-width-layout to match HTML */
+    display: flex;
+    flex-direction: column; /* Sections within this container will stack vertically */
+    max-width: 1300px; /* Wider to match "full width" feel from image */
+    width: 100%;
+    margin: 30px auto; /* Centers the container and adds vertical margin */
+    padding: 50px; /* Generous internal padding */
+    background-color: #3E245F; /* A slightly lighter purple for the main content area */
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+/* Profile Header Area (Avatar, Name, Email) */
+.profile-header { /* Changed from .profile-header-area to match HTML */
+    display: flex;
+    gap: 50px;
+    margin-bottom: 50px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    align-items: flex-start; /* Aligns items to the top */
+    justify-content: space-between; /* Pushes content to edges */
+}
+
+.profile-avatar-section { /* Changed from .profile-avatar-info-group to match HTML */
+    display: flex;
+    align-items: flex-start; /* Aligns avatar and name vertically */
+    gap: 40px;
+    flex-shrink: 0; /* Prevents this section from shrinking */
+    position: relative; /* For avatar edit overlay positioning */
+}
+
+.profile-avatar { /* Removed .large-avatar to match HTML */
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    overflow: hidden; /* Ensures image stays within circle */
+    border: 5px solid #B76BC4; /* Accent color border */
+    box-shadow: 0 0 0 10px rgba(183, 107, 196, 0.25); /* Outer glow effect */
+    flex-shrink: 0; /* Prevent avatar from shrinking */
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures image fills the circle without distortion */
+}
+
+/* Avatar Edit Overlay (for profile page) */
+.avatar-edit-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0; /* Hidden by default */
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+    z-index: 10; /* Ensure it's above the avatar image */
+    pointer-events: none; /* Allows clicks underneath when hidden */
+}
+
+/* To activate overlay: Add a class 'editing' to .profile-avatar-section with JS */
+.profile-avatar-section.editing .avatar-edit-overlay {
+    opacity: 1;
+    pointer-events: all; /* Enable clicks when active */
+}
+
+.custom-avatar-upload-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px; /* Make it a circle button */
+    height: 60px;
+    border-radius: 50%;
+    background-color: #B76BC4; /* Accent color */
+    color: white;
+    font-size: 24px; /* Larger icon */
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.custom-avatar-upload-button:hover {
+    background-color: #A05BB0;
+    transform: scale(1.05);
+}
+
+.profile-details-header { /* Changed from .profile-name-status to match HTML */
+    flex-grow: 1; /* Allows this section to take available space */
+    text-align: left;
+}
+
+.profile-username { /* Changed from h1 to p.profile-username to match HTML */
+    font-size: 44px;
+    font-weight: 700;
+    margin: 0 0 10px 0;
+    color: white;
+    line-height: 1.2;
+}
+
+.profile-email { /* Changed from .email-display to p.profile-email to match HTML */
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 8px;
+    word-break: break-all; /* Ensures long emails wrap */
+}
+
+/* User Information Section (grid) */
+/* No specific h3 styling needed here as per provided HTML structure for this section */
+
+.user-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); /* Responsive grid columns */
+    gap: 25px; /* Space between grid items */
+}
+
+.info-item {
+    background-color: #4C2D70; /* Background for each info item */
+    border-radius: 12px;
+    padding: 20px 25px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+    font-size: 18px;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.info-item p.label { /* Explicitly target p with class label */
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.8);
+    flex-shrink: 0; /* Prevents label from shrinking */
+    margin: 0; /* Remove default paragraph margin */
+    margin-right: 25px;
+}
+
+/* Styling for both display span and input fields */
+.info-item span,
+.info-item input.edit-input {
+    margin: 0;
+    text-align: right; /* Aligns text to the right for values */
+    flex-grow: 1; /* Allows value/input to take remaining space */
+    word-break: break-all;
+    color: #B76BC4; /* Accent color for values */
+    font-weight: 600;
+    background: transparent; /* Make input background transparent initially */
+    border: none; /* Remove input border initially */
+    outline: none; /* Remove focus outline initially */
+    font-size: 18px; /* Match display font size */
+    padding: 0; /* Remove default input padding */
+}
+
+.info-item input.edit-input {
+    background-color: #3E245F; /* Darker background when editable */
+    border: 1px solid #594273; /* Subtle border for inputs */
+    border-radius: 5px;
+    padding: 5px 10px; /* Add padding when editable */
+    color: white; /* Ensure text color is white when typing */
+    box-sizing: border-box; /* Include padding in width calculation */
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.info-item input.edit-input:focus {
+    border-color: #B76BC4; /* Highlight border on focus */
+    box-shadow: 0 0 0 2px rgba(183, 107, 196, 0.4); /* Subtle glow */
+}
+
+/* Profile Action Buttons (Bottom of profile page) */
+.profile-action-buttons {
+    display: flex;
+    flex-direction: row; /* Default to row for wider screens */
+    flex-wrap: wrap; /* Allow buttons to wrap */
+    justify-content: center; /* Center buttons horizontally */
+    gap: 20px; /* Space between buttons */
+    width: 100%;
+    margin-top: 50px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1); /* Divider above buttons */
+}
+
+.profile-action-buttons .long-button {
+    flex: 1 1 280px; /* Allows buttons to grow/shrink, min 280px width */
+    max-width: 380px; /* Max width for individual buttons in this layout */
+    margin-top: 0; /* Override potential margin from generic .long-button */
+}
+
+/* Specific background colors for action buttons (relying on .long-button for base styles) */
+.profile-action-buttons .edit-button {
+    background-color: #B76BC4; /* Primary accent */
+}
+.profile-action-buttons .delete-button {
+    background-color: #E74C3C; /* Red for delete */
+}
+.profile-action-buttons .delete-button:hover {
+    background-color: #C0392B;
+}
+.profile-action-buttons .password-button { /* Added password button style */
+    background-color: #594273; /* A darker purple */
+}
+.profile-action-buttons .password-button:hover {
+    background-color: #4C2D70;
+}
+
+/* Styles for Save and Cancel buttons in edit mode */
+.profile-action-buttons .save-button { /* Changed from .save-mode-btn to match HTML */
+    background-color: #4CAF50; /* Green for save */
+}
+
+.profile-action-buttons .save-button:hover {
+    background-color: #43A047;
+}
+
+.profile-action-buttons .cancel-button { /* Changed from .cancel-mode-btn to match HTML */
+    background-color: #757575; /* Gray for cancel */
+}
+
+.profile-action-buttons .cancel-button:hover {
+    background-color: #616161;
+}
+
+/* Responsive Adjustments for general/auth pages and header */
+@media (max-width: 1100px) {
+    .profile-page-container {
+        padding: 40px;
+    }
+    .profile-header { /* Changed from .profile-header-area */
+        flex-direction: column; /* Stack header items vertically */
+        align-items: center; /* Center header items */
+        text-align: center;
+        gap: 40px;
+    }
+    .profile-avatar-section { /* Changed from .profile-avatar-info-group */
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 25px;
+    }
+    .profile-details-header { /* Changed from .profile-name-status */
+        text-align: center;
+    }
+    .profile-username { /* Changed from h1 */
+        font-size: 38px;
+    }
+    /* No portfolio-summary section, so no media query for it */
+    /* No specific h3 for user-details-section, so removed that media query */
+    .user-info-grid {
+        grid-template-columns: 1fr; /* Single column layout */
+    }
+    .info-item {
+        flex-direction: column; /* Stack label and value vertically */
+        align-items: flex-start;
+        gap: 8px;
+        padding: 18px 25px;
+    }
+    .info-item p.label, /* Explicitly target p.label */
+    .info-item span,
+    .info-item input {
+        text-align: left; /* Align text to left */
+        width: 100%;
+        margin-right: 0;
+    }
+    .profile-action-buttons {
+        flex-direction: column; /* Stack buttons vertically */
+        gap: 15px;
+        padding-top: 30px;
+    }
+    .profile-action-buttons .long-button {
+        max-width: 100%; /* Buttons take full width */
+        height: 55px;
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        height: auto;
+        padding: 15px;
+        gap: 10px;
+    }
+    .header p {
+        font-size: 28px;
+        margin-bottom: 5px;
+    }
+    .header-buttons {
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 0;
+    }
+    .header button {
+        padding: 8px 15px;
+        font-size: 14px;
+        min-width: unset;
+    }
+    /* No centered-form-container in this HTML, so removed related media queries */
+    modernstatus-popup {
+        top: 15px;
+        right: 15px;
+        left: 15px; /* Allow it to stretch on small screens */
+        transform: translateY(-120%); /* Adjust for top placement (from top of screen) */
+        min-width: unset;
+        text-align: center;
+        flex-direction: column;
+        gap: 5px;
+        padding: 12px 20px;
+    }
+    modernstatus-popup.active {
+        transform: translateY(0);
+    }
+    .modal-content {
+        padding: 25px;
+    }
+    .modal-content h3 { /* Adjusted to match h3 in HTML */
+        font-size: 24px;
+        margin-bottom: 15px;
+    }
+    .modal-content p { /* Adjusted to match p in HTML */
+        font-size: 16px;
+        margin-bottom: 25px;
+    }
+    .modal-button {
+        padding: 12px 25px;
+        height: 50px;
+        font-size: 16px;
+        min-width: 120px;
+    }
+
+    .profile-page-container {
+        padding: 25px;
+        margin: 20px auto;
+    }
+    /* No profile-section h3 specific style */
+    .profile-avatar { /* Removed .large-avatar */
+        width: 150px;
+        height: 150px;
+        border: 4px solid #B76BC4;
+        box-shadow: 0 0 0 8px rgba(183, 107, 196, 0.2);
+    }
+    .profile-username { /* Removed h1 */
+        font-size: 32px;
+    }
+    .profile-email { /* Removed .email-display */
+        font-size: 16px;
+    }
+    /* No portfolio-summary section, so no media query for it */
+    /* No user-details-section h3 specific style */
+    .info-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+        padding: 15px;
+    }
+    .info-item p.label, /* Explicitly target p.label */
+    .info-item span,
+    .info-item input {
+        text-align: left;
+        width: 100%;
+        margin-right: 0;
+    }
+    .profile-action-buttons .long-button {
+        font-size: 16px;
+        height: 45px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* No centered-form-container in this HTML, so removed related media queries */
+    .modal-content {
+        padding: 20px;
+    }
+    .modal-content h3 { /* Adjusted to match h3 in HTML */
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+    .modal-content p { /* Adjusted to match p in HTML */
+        font-size: 14px;
+        margin-bottom: 20px;
+    }
+    .modal-button {
+        height: 45px;
+        font-size: 14px;
+    }
+    .header p {
+        font-size: 24px;
+    }
+
+    .profile-page-container {
+        padding: 15px;
+        margin: 20px auto; /* Keep some margin for mobile */
+    }
+    .profile-header { /* Changed from .profile-header-area */
+        gap: 30px;
+        padding-bottom: 25px;
+    }
+    .profile-avatar { /* Removed .large-avatar */
+        width: 120px;
+        height: 120px;
+        border: 3px solid #B76BC4;
+        box-shadow: 0 0 0 6px rgba(183, 107, 196, 0.15);
+    }
+    .profile-username { /* Removed h1 */
+        font-size: 28px;
+    }
+    .profile-email { /* Removed .email-display */
+        font-size: 14px;
+    }
+    /* No profile-section h3 specific style */
+    .info-item {
+        font-size: 14px;
+    }
+    .profile-action-buttons .long-button {
+        height: 40px;
+        font-size: 14px;
+    }
+}

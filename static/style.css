@@ -1,0 +1,527 @@
+/* General Body and Container Styles */
+body {
+    margin: 0;
+    background-color: #2E1A47;
+    color: white;
+    font-family: 'Inter', sans-serif; /* A more modern, clean font */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    line-height: 1.6; /* Improve readability */
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    padding: 0 20px; /* Add horizontal padding for smaller screens */
+    justify-content: center; /* Center content vertically in the body */
+}
+
+/* Header Styles */
+.header {
+    display: flex;
+    background-color: #594273;
+    justify-content: space-between;
+    align-items: center; /* Vertically align items in header */
+    height: 80px; /* Slightly increase header height */
+    padding: 0 30px; /* Add padding to the sides */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+    width: 100%; /* Ensure header spans full width */
+    box-sizing: border-box; /* Include padding in width */
+}
+
+.header p {
+    font-size: 36px; /* Slightly larger logo text */
+    font-weight: 700; /* Bolder for emphasis */
+    margin: 0; /* Remove default paragraph margin */
+    color: white;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 15px; /* Reduce gap slightly */
+}
+
+.header button {
+    color: white;
+    background-color: #B76BC4;
+    border: none; /* Remove border */
+    border-radius: 8px; /* Slightly less rounded */
+    padding: 10px 20px; /* Adjust padding */
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+}
+
+.header button:hover {
+    background-color: #A05BB0; /* Darken on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+}
+
+/* Welcome Part Styles (for main page) */
+.welcome-part {
+    text-align: center; /* Center align text for a cleaner look */
+    padding: 80px 20px; /* More vertical padding */
+    max-width: 900px; /* Constrain width for better readability */
+    margin: 0 auto; /* Center the block */
+}
+
+.big-text {
+    font-weight: 700; /* Bolder */
+    font-size: 68px; /* Slightly adjusted size */
+    margin-bottom: 20px; /* More space below heading */
+    line-height: 1.1; /* Tighter line height */
+}
+
+.not-opac {
+    font-size: 26px; /* Slightly larger */
+    opacity: 0.9; /* Subtle opacity */
+    margin-bottom: 30px;
+}
+
+.half-way-p {
+    font-size: 20px; /* Slightly smaller for body text */
+    opacity: 0.8; /* More subtle */
+    margin: 0 auto 50px auto; /* Center and add more bottom margin */
+    max-width: 700px; /* Constrain width */
+}
+
+.welcome-part button {
+    background-color: #B76BC4;
+    min-height: 55px; /* Slightly taller button */
+    border-radius: 10px;
+    min-width: 280px; /* Wider button */
+    font-size: 28px; /* Larger font */
+    border: none; /* Remove border */
+    padding: 10px 20px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* Add shadow */
+}
+
+.welcome-part button:hover {
+    background-color: #A05BB0;
+    transform: translateY(-3px); /* More pronounced lift */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); /* More pronounced shadow */
+}
+
+/* Social Proof Section */
+.social-proof {
+    display: grid; /* Use CSS Grid for better layout control */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive columns */
+    gap: 30px; /* Space between cards */
+    margin-top: 100px;
+    padding: 0 20px;
+    max-width: 1200px; /* Max width for the grid */
+    width: 100%;
+}
+
+.card-1 {
+    background-color: #560B65;
+    border-radius: 12px; /* More rounded corners */
+    padding: 30px; /* More internal padding */
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Softer border */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Push author to the bottom */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Add shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-1:hover {
+    transform: translateY(-5px); /* Lift on hover */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); /* Enhance shadow on hover */
+}
+
+.card-1 p:first-of-type {
+    font-size: 18px; /* Slightly smaller quote text */
+    margin-bottom: 20px;
+    opacity: 0.9;
+}
+
+.card-1 p:last-of-type {
+    font-size: 16px;
+    font-weight: 600;
+    text-align: right; /* Align author to the right */
+    opacity: 0.7;
+    margin-top: auto; /* Push to the bottom */
+}
+
+/* Styled Paragraphs (Why We Built Brokefolio) */
+.styled-p {
+    font-size: 20px; /* Consistent body text size */
+    margin-top: 40px; /* Adjusted spacing */
+    opacity: 0.85;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center; /* Center align text */
+}
+
+/* --- Login & Profile Page Specific Styles --- */
+
+/* Form Container Styles */
+.login-form,
+.profile-container {
+    background-color: #3E245F; /* Slightly lighter background for the form container */
+    border-radius: 15px; /* Rounded corners for the form */
+    padding: 40px; /* More padding inside */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4); /* Stronger shadow */
+    margin-top: 50px; /* Add margin to separate from header */
+    margin-bottom: 50px;
+    width: 100%;
+    max-width: 600px; /* Max width for forms */
+    box-sizing: border-box; /* Include padding in width */
+    display: flex; /* Use flexbox for internal layout */
+    flex-direction: column; /* Stack items vertically */
+    align-items: center; /* Center items horizontally */
+    flex-shrink: 0; /* Prevent shrinking when content is tall */
+}
+
+.login-form .big-text,
+.profile-container .big-text {
+    font-size: 56px; /* Slightly smaller for form headings */
+    margin-bottom: 30px;
+    text-align: center; /* Ensure text is centered */
+    width: 100%; /* Ensure heading takes full width */
+}
+
+/* Input Field Styles */
+.login-form input {
+    background-color: #4C2D70; /* Darker input background */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Softer border */
+    border-radius: 12px; /* More rounded inputs */
+    min-height: 50px; /* Taller inputs */
+    padding: 15px 20px; /* Adjust padding */
+    font-size: 18px; /* Consistent font size */
+    color: white;
+    width: 100%; /* Ensure full width */
+    box-sizing: border-box; /* Include padding in width */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    margin-top: 20px; /* Add margin for spacing between inputs */
+}
+
+.login-form input:focus {
+    outline: none;
+    border-color: #B76BC4; /* Highlight on focus */
+    box-shadow: 0 0 0 3px rgba(183, 107, 196, 0.5); /* Glow effect */
+}
+
+.login-form input::placeholder {
+    color: rgba(255, 255, 255, 0.6); /* Lighter placeholder text */
+}
+
+/* Half-Width Input Group */
+.login-form .half-input {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    margin-top: 20px; /* Spacing for the group */
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+}
+
+.login-form .half-input input {
+    flex: 1 1 calc(50% - 10px); /* Flex basis for two columns with gap */
+    min-width: 150px; /* Allow shrinking on very small screens */
+    margin-top: 0; /* Remove individual input margin when in half-input group */
+}
+
+.login-form .first {
+    margin-right: 0; /* Remove specific margin for better flex handling */
+}
+
+/* Long Button Styles (for login/register/update) */
+.long-button {
+    width: 100%;
+    height: 60px; /* Adjust height */
+    margin-top: 30px; /* More space above button */
+    font-size: 22px; /* Slightly smaller font */
+    color: white;
+    background-color: #B76BC4;
+    border-radius: 10px;
+    border: none; /* Remove border */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.long-button:hover {
+    background-color: #A05BB0;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Forgot Password Link */
+.forgor {
+    margin-top: 20px; /* More space */
+    font-size: 16px;
+    text-align: center; /* Center the forgot password link */
+    width: 100%; /* Ensure it takes full width */
+}
+
+.forgor a {
+    color: #B76BC4; /* Make link color match primary button */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.forgor a:hover {
+    color: #A05BB0;
+    text-decoration: underline;
+}
+
+#confirmPass {
+    margin-top: 20px; /* Adjust spacing specific to confirm password */
+}
+
+
+/* Profile Container Specific Styles */
+.profile-info {
+    width: 100%;
+    margin-bottom: 40px; /* More space below info */
+}
+
+.info-item {
+    background-color: #4C2D70; /* Consistent with input background */
+    border-radius: 12px;
+    padding: 18px 25px; /* More padding */
+    margin-bottom: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Allow wrapping of label/value */
+}
+
+.info-item label {
+    font-size: 20px; /* Slightly smaller label */
+    font-weight: 600; /* Bolder label */
+    color: white;
+    flex-basis: 150px; /* Give label a fixed width */
+    margin-right: 20px; /* Space between label and value */
+    flex-shrink: 0; /* Prevent label from shrinking too much */
+}
+
+.info-item p {
+    font-size: 20px; /* Consistent value font size */
+    color: rgba(255, 255, 255, 0.9); /* Slightly desaturated for values */
+    flex-grow: 1;
+    text-align: right;
+    word-break: break-all; /* Prevent long words from overflowing */
+    margin: 0; /* Remove default paragraph margin */
+}
+
+.delete-button {
+    background-color: #E74C3C; /* Red color for delete */
+    border: none;
+}
+
+.delete-button:hover {
+    background-color: #C0392B; /* Darker red on hover */
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Status Popup Styles (for potential future use, based on your HTML) */
+.status-popup {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(46, 26, 71, 0.95); /* Match body background with opacity */
+    color: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    display: none; /* Hidden by default */
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+}
+
+.status-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none; /* Hidden by default */
+}
+
+#statusIcon {
+    font-size: 24px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column; /* Stack header items */
+        height: auto;
+        padding: 15px;
+        gap: 10px;
+    }
+
+    .header p {
+        font-size: 28px;
+        margin-bottom: 5px;
+    }
+
+    .header-buttons {
+        flex-wrap: wrap; /* Allow buttons to wrap */
+        justify-content: center;
+        padding: 0;
+    }
+
+    .header button {
+        padding: 8px 15px;
+        font-size: 14px;
+        min-width: unset; /* Remove min-width */
+    }
+
+    .welcome-part {
+        padding: 60px 15px;
+    }
+
+    .big-text {
+        font-size: 48px; /* Smaller heading on mobile */
+    }
+
+    .not-opac, .half-way-p, .styled-p {
+        font-size: 18px; /* Smaller body text on mobile */
+    }
+
+    .welcome-part button {
+        min-width: 200px;
+        font-size: 24px;
+        min-height: 45px;
+    }
+
+    .social-proof {
+        grid-template-columns: 1fr; /* Single column on small screens */
+        margin-top: 60px;
+        padding: 0 15px;
+    }
+
+    .card-1 {
+        width: auto; /* Allow card to take full width */
+        margin: 0; /* Remove specific margin */
+        padding: 25px;
+    }
+
+    .login-form, .profile-container {
+        padding: 25px;
+        margin: 30px auto;
+        max-width: 90%; /* Adjust max-width for better mobile fit */
+    }
+
+    .login-form .big-text, .profile-container .big-text {
+        font-size: 40px;
+    }
+
+    .login-form input, .info-item label, .info-item p {
+        font-size: 16px; /* Smaller font for inputs and info items */
+    }
+
+    .login-form .half-input {
+        flex-direction: column; /* Stack half inputs vertically */
+        gap: 15px;
+    }
+
+    .login-form .half-input input {
+        min-width: unset; /* Allow inputs to shrink */
+        width: 100%;
+    }
+
+    .long-button {
+        font-size: 20px;
+        height: 50px;
+    }
+
+    .info-item {
+        flex-direction: column; /* Stack label and value vertically */
+        align-items: flex-start;
+    }
+
+    .info-item label {
+        margin-bottom: 5px;
+        margin-right: 0;
+    }
+
+    .info-item p {
+        text-align: left;
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .big-text {
+        font-size: 36px;
+    }
+
+    .not-opac, .half-way-p, .styled-p {
+        font-size: 16px;
+    }
+    .welcome-part button {
+        min-width: unset;
+        width: 100%;
+        font-size: 20px;
+    }
+}
+
+.avatar-upload-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px; /* Space below the upload section */
+    padding: 20px;
+    background-color: #3E245F; /* Lighter purple background */
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    width: 90%; /* Adjust width to fit form, or make it full width */
+    max-width: 300px; /* Max width for the upload area */
+    margin-left: auto; /* Center the block */
+    margin-right: auto; /* Center the block */
+}
+
+.avatar-preview {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%; /* Make it a circle */
+    object-fit: cover; /* Ensure image covers the area */
+    border: 3px solid #B76BC4; /* Accent color border */
+    margin-bottom: 15px;
+    box-shadow: 0 0 0 5px rgba(183, 107, 196, 0.2); /* Subtle glow */
+}
+
+.custom-file-upload-button {
+    display: inline-flex; /* Allows icon and text to sit together */
+    align-items: center;
+    gap: 8px; /* Space between icon and text */
+    padding: 10px 20px;
+    background-color: #B76BC4; /* Button color */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.custom-file-upload-button:hover {
+    background-color: #A05BB0;
+    transform: translateY(-2px);
+}
+
+.upload-tip {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 10px;
+    text-align: center;
+}

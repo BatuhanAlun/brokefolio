@@ -25,6 +25,7 @@ func (h *LoginDBHandler) LoginHandler(w http.ResponseWriter, req *http.Request) 
 
 	if err != nil {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
+		return
 	}
 
 	defer req.Body.Close()
@@ -37,8 +38,9 @@ func (h *LoginDBHandler) LoginHandler(w http.ResponseWriter, req *http.Request) 
 	var sqlUsername string
 	var sqlPassword string
 	var sqlRole string
+	var sqlUserID string
 
-	err = h.DB.QueryRow("SELECT username , password , role FROM users WHERE username = $1", user.Username).Scan(&sqlUsername, &sqlPassword, &sqlRole)
+	err = h.DB.QueryRow("SELECT id ,username , password , role FROM users WHERE username = $1", user.Username).Scan(&sqlUserID, &sqlUsername, &sqlPassword, &sqlRole)
 
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -73,6 +75,38 @@ func (h *LoginDBHandler) LoginHandler(w http.ResponseWriter, req *http.Request) 
 		SameSite: http.SameSiteStrictMode,
 	}
 
+	//session
+
+	sessionID, err := utils.GenerateNewToken(32)
+
+	if err != nil {
+		http.Error(w, "Error generating session ID", http.StatusInternalServerError)
+		log.Printf("Failed to generate session id %v\n", err)
+		return
+	}
+
+	sessionExpiresAt := time.Now().Add(24 * time.Hour)
+
+	_, err = h.DB.Exec("INSERT INTO sessions (session_id, user_id, expires_at) VALUES ($1, $2, $3)", sessionID, sqlUserID, sessionExpiresAt)
+
+	if err != nil {
+		http.Error(w, "Error Saving Session", http.StatusInternalServerError)
+		log.Printf("Failed to insert session into DB %v\n", err)
+		return
+	}
+
+	sessionCookie := &http.Cookie{
+		Name:     "sessionID",
+		Value:    sessionID,
+		Expires:  sessionExpiresAt,
+		HttpOnly: true,
+		Path:     "/",
+		Secure:   false,
+		SameSite: http.SameSiteLaxMode,
+	}
+
+	http.SetCookie(w, sessionCookie)
+
 	http.SetCookie(w, cookie)
 
 	w.Header().Set("Content-Type", "application/json")
@@ -80,5 +114,6 @@ func (h *LoginDBHandler) LoginHandler(w http.ResponseWriter, req *http.Request) 
 		"message": "Succesfully Logged In!",
 	})
 	log.Println("Login succesful, JWT sent")
+	log.Println("Session Token Sent")
 
 }

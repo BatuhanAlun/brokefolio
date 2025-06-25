@@ -11,4 +11,5 @@ type User struct {
 	Name            string    `json:"name"`
 	Surname         string    `json:"surname"`
 	ConfirmPassword string    `json:"confirm_password"`
+	AvatarURL       string    `json:"avatarUrl"`
 }

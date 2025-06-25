@@ -1,5 +1,5 @@
 const loginForm = document.getElementById("loginForm");
-const myStatusPopup = document.querySelector('status-popup');
+const myStatusPopup = document.getElementById("myStatusPopup")
 
 
 loginForm.addEventListener('submit', async (event) => {
@@ -10,7 +10,7 @@ loginForm.addEventListener('submit', async (event) => {
 
 
     try{
-        const response = await fetch('http://127.0.0.1:8080/api/login',{
+        const response = await fetch('http://localhost:8080/api/login',{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -27,7 +27,7 @@ loginForm.addEventListener('submit', async (event) => {
 
 
             setTimeout(function(){
-                window.location.replace("http://127.0.0.1:5500/index.html");
+                window.location.replace("http://localhost:8080/homepage");
             },3000)
         }else {
             let errorMessage = `Registration failed with status: ${response.status}`;

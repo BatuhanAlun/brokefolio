@@ -3,21 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/static/style.css">
+        <link rel="stylesheet" href="/static/changestyle.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <title>Brokefolio</title>
 </head>
 <body>
     <div class="header">
             <p style="background-color: #594273;">Brokefolio</p>
             <div class="header-buttons">
-                <a href="login.html"><button>Giriş Yap</button></a>
-                <a href="register.html"><button>Kayıt Ol</button></a>
+                <a href="/login"><button>Giriş Yap</button></a>
+                <a href="/register"><button>Kayıt Ol</button></a>
             </div>
     </div>
     <div class="body">
         <div class="login-form">
             <form id="registerForm">
                 <p class="big-text">Brokefolio'ya Kayıt Ol!</p>
+
+                <div class="avatar-upload-container">
+                    <img id="avatarPreview" src="/static/default-avatar.png" alt="Profile Avatar" class="avatar-preview">
+                    <input type="file" id="avatarUploadInput" accept="image/*" style="display: none;">
+                    <label for="avatarUploadInput" class="custom-file-upload-button">
+                        <i class="fas fa-camera"></i> Profil Fotoğrafı Yükle
+                    </label>
+                    <p class="upload-tip">JPG, PNG, GIF. Max 5MB.</p>
+                </div>
                 <div class="half-input">
                 <input class="first" placeholder="İsim" type="text" name="name" id="name">
                 <input placeholder="Soyisim" type="text" name="surname" id="surname">
@@ -27,14 +38,18 @@
                 <input placeholder="Şifre" type="password" name="password" id="password" onkeyup="check();">
                 <input placeholder="Şifre" type="password" name="confirm_password" id="confirm_password" onkeyup='check();'>
                 <span id='confirmPass'></span>
-                <status-popup></status-popup>
-                <button class="long-button">Giriş Yap</button>
-                <p class="forgor">Zaten Kayıtlı mısın? <a href="login.html">Hemen Giriş Yap!</a></p>
+                <button class="long-button">Kayıt Ol!</button>
+                <p class="forgor">Zaten Kayıtlı mısın? <a href="/login">Hemen Giriş Yap!</a></p>
             </form>    
         </div>
+        <div id="popMessage" class="pop-message">
+          <span class="pop-icon"></span>
+          <span class="pop-text"></span>
+          <span class="pop-spinner"><i class="fas fa-spinner fa-spin"></i></span>
+        </div>
     </div>
-    <script src="js/register.js"></script>
-    <script src="js/status-popup.js"></script>
+    <script src="/static/register.js"></script>
+    <script src="/static/popup-message.js"></script>
       <script>
     var check = function() {
       if (document.getElementById('password').value ==

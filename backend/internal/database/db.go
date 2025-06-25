@@ -8,7 +8,7 @@ import (
 )
 
 func InitDB() *sql.DB {
-	connStr := "user=postgres dbname=brokefolio password=securepass host=localhost sslmode=disable" // Change this
+	connStr := "user=postgres dbname=brokefolio password=postgres host=localhost sslmode=disable" // Change this
 
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
