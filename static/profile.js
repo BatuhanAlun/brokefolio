@@ -166,11 +166,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             try {
-                if (!authToken) {
-                    showPopMessage("error", "Yetkilendirme hatası: Giriş yapmış olmalısınız.", 4000);
-                    setTimeout(() => { window.location.href = "/logout"; }, 2000);
-                    return;
-                }
+
 
                 const response = await fetch('/api/user/update-profile', {
                     method: 'PUT',

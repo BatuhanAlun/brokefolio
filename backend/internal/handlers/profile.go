@@ -7,10 +7,15 @@ import (
 	"brokefolio/backend/internal/utils"
 	"database/sql"
 	"encoding/json"
+	"io"
 	"log"
 	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
 	"time"
 
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -79,31 +84,107 @@ func (h *ProfileDBHandler) UpdateProfileHandler(w http.ResponseWriter, req *http
 	// 	return
 	// }
 
-	var updateUser models.User
+	err := req.ParseMultipartForm(10 << 20)
+	if err != nil {
+		log.Printf("Error parsing multipart form: %v", err)
+		http.Error(w, "Kayıt verisi işlenemedi.", http.StatusBadRequest)
+		return
+	}
 
-	err := json.NewDecoder(req.Body).Decode(&updateUser)
+	name := req.FormValue("name")
+	surname := req.FormValue("surname")
+	username := req.FormValue("username")
+	email := req.FormValue("email")
+
+	if name == "" || surname == "" || username == "" || email == "" {
+		utils.SendJSONError(w, "Tüm alanlar doldurulmalıdır.", http.StatusBadRequest)
+		return
+	}
+
+	var existingCount int
+	err = h.DB.QueryRow("SELECT COUNT(*) FROM users WHERE (username = $1 OR email = $2) AND id != $3", username, email, userID).Scan(&existingCount)
+	if err != nil {
+		log.Printf("Error checking existing username/email for update: %v", err)
+		utils.SendJSONError(w, "Sunucu hatası. Lütfen tekrar deneyin.", http.StatusInternalServerError)
+		return
+	}
+	if existingCount > 0 {
+		var usernameExists, emailExists bool
+		h.DB.QueryRow("SELECT COUNT(*) FROM users WHERE username = $1 AND id != $2", username, userID).Scan(&usernameExists)
+		h.DB.QueryRow("SELECT COUNT(*) FROM users WHERE email = $1 AND id != $2", email, userID).Scan(&emailExists)
+
+		if usernameExists {
+			utils.SendJSONError(w, "Bu kullanıcı adı zaten başka bir kullanıcı tarafından alınmış.", http.StatusConflict)
+			return
+		}
+		if emailExists {
+			utils.SendJSONError(w, "Bu e-posta adresi zaten başka bir kullanıcı tarafından kullanılıyor.", http.StatusConflict)
+			return
+		}
+	}
+
+	avatarPath := "../../../static/default-avatar.png"
+	file, handler, err := req.FormFile("avatar")
+	if err == nil {
+		defer file.Close()
+
+		fileExt := strings.ToLower(filepath.Ext(handler.Filename))
+		allowedExtensions := map[string]bool{".jpg": true, ".jpeg": true, ".png": true, ".gif": true}
+		if !allowedExtensions[fileExt] {
+			utils.SendJSONError(w, "Geçersiz fotoğraf formatı. JPG, PNG veya GIF olmalı.", http.StatusBadRequest)
+			return
+		}
+
+		fileName := uuid.New().String() + fileExt
+
+		uploadDir := "../../../static/avatars"
+		if _, err := os.Stat(uploadDir); os.IsNotExist(err) {
+			err = os.MkdirAll(uploadDir, 0755)
+			if err != nil {
+				log.Printf("Error creating upload directory %s: %v", uploadDir, err)
+				utils.SendJSONError(w, "Sunucu hatası: Avatar yüklenemedi.", http.StatusInternalServerError)
+				return
+			}
+		}
+
+		filePath := filepath.Join(uploadDir, fileName)
+		dst, err := os.Create(filePath)
+		if err != nil {
+			log.Printf("Error creating file %s: %v", filePath, err)
+			utils.SendJSONError(w, "Sunucu hatası: Avatar yüklenemedi.", http.StatusInternalServerError)
+			return
+		}
+		defer dst.Close()
+
+		if _, err := io.Copy(dst, file); err != nil {
+			log.Printf("Error copying file to %s: %v", filePath, err)
+			utils.SendJSONError(w, "Sunucu hatası: Avatar yüklenemedi.", http.StatusInternalServerError)
+			return
+		}
+		avatarPath = "../../../static/avatars/" + fileName
+	} else if err != http.ErrMissingFile {
+		log.Printf("Error getting avatar file: %v", err)
+		utils.SendJSONError(w, "Avatar yüklenirken bir hata oluştu.", http.StatusBadRequest)
+		return
+	}
+
+	_, err = h.DB.Exec(
+		"UPDATE users SET name = $1, username = $2, surname = $3, email = $4, pp = $5 WHERE id = $6",
+		name, username, surname, email, avatarPath, userID,
+	)
 
 	if err != nil {
-		http.Error(w, "Invalid Request", http.StatusBadRequest)
-		log.Println("Invalid Request On Update")
+		log.Printf("SQL Update Failed for user %s: %v\n", userID, err)
+		utils.SendJSONError(w, "Profil güncellenemedi. Lütfen tekrar deneyin.", http.StatusInternalServerError)
 		return
 	}
 
-	if updateUser.Name == "" || updateUser.Surname == "" || updateUser.Username == "" || updateUser.Email == "" {
-		http.Error(w, "All fields are required", http.StatusBadRequest)
-		return
-	}
-
-	_, err = h.DB.Exec("UPDATE users SET name = $1, username = $2, surname = $3, email = $4 WHERE id = $5", updateUser.Name, updateUser.Username, updateUser.Surname, updateUser.Email, userID)
-
-	if err != nil {
-		http.Error(w, "Update Failed", http.StatusInternalServerError)
-		log.Printf("SQL Update Failed %v\n", err)
-		return
-	}
-
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]string{"message": "Profile updated successfully"})
+	json.NewEncoder(w).Encode(map[string]string{
+		"message": "Profil başarıyla güncellendi.",
+	})
+
 }
 
 func (h *ProfileDBHandler) DeleteProfileHandler(w http.ResponseWriter, req *http.Request) {
