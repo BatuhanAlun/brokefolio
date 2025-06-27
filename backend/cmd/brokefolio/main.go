@@ -34,8 +34,8 @@ func main() {
 	loginHandler := handlers.NewLoginHandler(db)
 	mailHandler := handlers.NewMailHandler(db)
 	sessionHandler := middleware.NewSessionMiddleware(db)
-
 	profileHandler := handlers.NewProfileHandler(db)
+	tradeHandler := handlers.NewBuyHandler(db)
 
 	fs := http.FileServer(http.Dir(staticPath))
 	router.Handle("/static/", http.StripPrefix("/static/", fs))
@@ -43,8 +43,13 @@ func main() {
 	router.HandleFunc("POST /api/login", loginHandler.LoginHandler)
 	router.HandleFunc("POST /api/register", registerHandler.RegisterHandler)
 	router.HandleFunc("POST /api/forgetPassword", mailHandler.MailResetHandler)
+	router.Handle("POST /api/trade", sessionHandler.CheckSessionMiddleware(http.HandlerFunc(tradeHandler.TradeHandler)))
+
+	router.HandleFunc("/api/news", handlers.CombinedNewsHandler)
 	router.Handle("/homepage", sessionHandler.CheckSessionMiddleware(http.HandlerFunc(handlers.HomeHandler)))
-	//market
+	router.Handle("/market", sessionHandler.CheckSessionMiddleware(http.HandlerFunc(handlers.MarketHandler)))
+
+	router.HandleFunc("/api/crypto-price", handlers.StockPriceHandler)
 	//portfolio
 	router.Handle("/profile", sessionHandler.CheckSessionMiddleware(http.HandlerFunc(profileHandler.ProfilePageHandler)))
 	router.HandleFunc("/login", handlers.LoginPageHandler)

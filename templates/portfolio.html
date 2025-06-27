@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/changestyle.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Brokefolio - Portföy</title>
+    <style>
+        /* Reusing common styles from market.html to maintain consistency */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #2E1A47; /* Dark background */
+            color: #E0E0E0; /* Light text */
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .header {
+            background-color: #4C2E75; /* Darker purple */
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            border-bottom: 2px solid #5C3D80;
+        }
+
+        .header p {
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .header-buttons button {
+            background-color: #B76BC4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-left: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .header-buttons button:hover {
+            background-color: #A05BB0;
+            transform: translateY(-1px);
+        }
+
+        .header-buttons button i {
+            margin-right: 8px;
+        }
+
+        /* Portfolio Page Specific Container */
+        .portfolio-page-container {
+            max-width: 1400px; /* Adjusted max-width for portfolio table */
+            width: 100%;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #3E245F;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            align-items: center;
+        }
+
+        h2.portfolio-title, h3.section-title {
+            color: #B76BC4;
+            font-size: 36px;
+            margin-bottom: 5px;
+            text-align: center;
+            width: 100%;
+        }
+
+        h3.section-title {
+            font-size: 28px;
+            margin-top: 15px;
+            color: #E2B9F3;
+            border-bottom: 2px solid #5C3D80;
+            padding-bottom: 10px;
+        }
+
+        /* Portfolio Summary */
+        .portfolio-summary {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            background-color: #4C2E75;
+            border-radius: 10px;
+            padding: 20px;
+            flex: 1;
+            min-width: 250px;
+            max-width: 350px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            color: #E0E0E0;
+        }
+
+        .summary-card h4 {
+            color: #B76BC4;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .summary-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #E2B9F3;
+        }
+
+        .summary-value.positive {
+            color: #4CAF50; /* Green */
+        }
+        .summary-value.negative {
+            color: #F44336; /* Red */
+        }
+
+        /* Portfolio Holdings Table */
+        .holdings-table-container, .transactions-table-container {
+            width: 100%;
+            overflow-x: auto; /* Enable horizontal scrolling on small screens */
+            background-color: #2A1A40;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            padding: 15px;
+        }
+
+        .holdings-table, .transactions-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px; /* Ensure table doesn't get too narrow */
+        }
+
+        .holdings-table th, .holdings-table td,
+        .transactions-table th, .transactions-table td {
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 1px solid #5C3D80;
+            color: #E0E0E0;
+        }
+
+        .holdings-table th, .transactions-table th {
+            background-color: #4C2E75;
+            color: #B76BC4;
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .holdings-table tbody tr:nth-child(even),
+        .transactions-table tbody tr:nth-child(even) {
+            background-color: #3E245F; /* Slightly different row color */
+        }
+
+        .holdings-table tbody tr:hover,
+        .transactions-table tbody tr:hover {
+            background-color: #5C3D80; /* Hover effect */
+            cursor: pointer;
+        }
+
+        .holdings-table .value-positive {
+            color: #4CAF50; /* Green for positive P&L */
+            font-weight: 600;
+        }
+
+        .holdings-table .value-negative {
+            color: #F44336; /* Red for negative P&L */
+            font-weight: 600;
+        }
+        
+        /* Transaction specific styles for Buy/Sell text */
+        .transactions-table .transaction-type.buy {
+            color: #4CAF50; /* Green for buy */
+            font-weight: 600;
+        }
+        .transactions-table .transaction-type.sell {
+            color: #F44336; /* Red for sell */
+            font-weight: 600;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1000px) {
+            .portfolio-page-container {
+                padding: 15px;
+                margin: 20px auto;
+                gap: 20px;
+            }
+            h2.portfolio-title {
+                font-size: 30px;
+            }
+            h3.section-title {
+                font-size: 24px;
+            }
+            .summary-card {
+                min-width: 200px;
+                max-width: 100%;
+            }
+            .holdings-table th, .holdings-table td,
+            .transactions-table th, .transactions-table td {
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 10px;
+                padding: 15px;
+            }
+            .header p {
+                font-size: 24px;
+            }
+            .header-buttons button {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+            h2.portfolio-title {
+                font-size: 26px;
+            }
+            h3.section-title {
+                font-size: 20px;
+            }
+            .summary-card {
+                min-width: 100%; /* Stack cards on very small screens */
+            }
+            .holdings-table-container, .transactions-table-container {
+                padding: 10px;
+            }
+            .holdings-table th, .holdings-table td,
+            .transactions-table th, .transactions-table td {
+                padding: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <p>Brokefolio</p>
+        <div class="header-buttons">
+            <a href="/profile"><button>Profilim</button></a>
+            <a href="/portfolio"><button>Portföy</button></a>
+            <a href="/market"><button>Piyasa</button></a>
+            <a href="/logout"><button><i class="fas fa-sign-out-alt"></i> Çıkış Yap</button></a>
+        </div>
+    </div>
+
+    <div class="body">
+        <div class="portfolio-page-container">
+            <h2 class="portfolio-title">Portföyüm</h2>
+
+            <div class="portfolio-summary">
+                <div class="summary-card">
+                    <h4>Toplam Portföy Değeri</h4>
+                    <div id="total-portfolio-value" class="summary-value">Yükleniyor...</div>
+                </div>
+                <div class="summary-card">
+                    <h4>Toplam Kar/Zarar</h4>
+                    <div id="total-pnl" class="summary-value">Yükleniyor...</div>
+                </div>
+            </div>
+
+            <h3 class="section-title">Varlıklarım</h3>
+            <div class="holdings-table-container">
+                <table class="holdings-table">
+                    <thead>
+                        <tr>
+                            <th>Sembol</th>
+                            <th>Miktar</th>
+                            <th>Ort. Maliyet (USD)</th>
+                            <th>Güncel Fiyat (USD)</th>
+                            <th>Güncel Değer (USD)</th>
+                            <th>Kar/Zarar (USD)</th>
+                            <th>Kar/Zarar (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="portfolio-holdings-body">
+                        <!-- Portfolio holdings will be loaded here by JavaScript -->
+                        <tr>
+                            <td colspan="7" style="text-align: center; color: #ccc;">Portföy verileri yükleniyor...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p id="portfolio-message" style="color: #FFD700; text-align: center; margin-top: 15px;"></p>
+
+            <h3 class="section-title">İşlem Geçmişi</h3>
+            <div class="transactions-table-container">
+                <table class="transactions-table">
+                    <thead>
+                        <tr>
+                            <th>Zaman Damgası</th>
+                            <th>Sembol</th>
+                            <th>İşlem Tipi</th>
+                            <th>Miktar</th>
+                            <th>Fiyat (USD)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactions-body">
+                        <!-- Transaction history will be loaded here by JavaScript -->
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: #ccc;">İşlem geçmişi yükleniyor...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p id="transactions-message" style="color: #FFD700; text-align: center; margin-top: 15px;"></p>
+
+        </div>
+    </div>
+
+    <script>
+        const totalPortfolioValueSpan = document.getElementById('total-portfolio-value');
+        const totalPnlSpan = document.getElementById('total-pnl');
+        const portfolioHoldingsBody = document.getElementById('portfolio-holdings-body');
+        const portfolioMessageP = document.getElementById('portfolio-message');
+        const transactionsBody = document.getElementById('transactions-body'); // New: for transactions table
+        const transactionsMessageP = document.getElementById('transactions-message'); // New: for transactions messages
+
+        // Helper to format currency
+        function formatCurrency(value) {
+            return value.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+        }
+
+        // Helper to format percentage
+        function formatPercentage(value) {
+            return value.toFixed(2) + '%';
+        }
+
+        // Helper to format timestamp for display
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp); // Assuming timestamp is in milliseconds or parsable format
+            return date.toLocaleString(); // Format according to user's locale
+        }
+
+
+        async function fetchPortfolioData() {
+            portfolioHoldingsBody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #ccc;">Portföy verileri yükleniyor...</td></tr>';
+            portfolioMessageP.textContent = '';
+            totalPortfolioValueSpan.textContent = 'Yükleniyor...';
+            totalPnlSpan.textContent = 'Yükleniyor...';
+            totalPnlSpan.classList.remove('positive', 'negative'); // Clear previous classes
+
+            try {
+                const response = await fetch('/api/portfolio'); // Your new backend endpoint
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log("Portfolio Data:", data);
+
+                if (data.error) {
+                    portfolioMessageP.style.color = '#FF4C4C';
+                    portfolioMessageP.textContent = data.error;
+                    portfolioHoldingsBody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #dc3545;">Portföy yüklenirken hata oluştu.</td></tr>';
+                    totalPortfolioValueSpan.textContent = formatCurrency(0);
+                    totalPnlSpan.textContent = formatCurrency(0);
+                    return;
+                }
+
+                if (!data.holdings || data.holdings.length === 0) {
+                    portfolioHoldingsBody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #ccc;">Portföyünüzde henüz bir varlık bulunmamaktadır.</td></tr>';
+                    totalPortfolioValueSpan.textContent = formatCurrency(0);
+                    totalPnlSpan.textContent = formatCurrency(0);
+                    totalPnlSpan.classList.remove('positive', 'negative');
+                    return;
+                }
+
+                let totalPortfolioValue = 0;
+                let totalUnrealizedPnl = 0; // For current open positions
+
+                portfolioHoldingsBody.innerHTML = ''; // Clear loading row
+
+                data.holdings.forEach(holding => {
+                    const row = document.createElement('tr');
+                    const currentValue = holding.quantity * holding.currentPrice;
+                    const pnl = currentValue - (holding.quantity * holding.averageBuyPrice);
+                    const pnlPercentage = (holding.averageBuyPrice > 0) ? (pnl / (holding.quantity * holding.averageBuyPrice)) * 100 : 0;
+
+                    totalPortfolioValue += currentValue;
+                    totalUnrealizedPnl += pnl;
+
+                    const pnlClass = pnl >= 0 ? 'value-positive' : 'value-negative';
+
+                    row.innerHTML = `
+                        <td>${holding.symbol}</td>
+                        <td>${holding.quantity.toFixed(6)}</td>
+                        <td>${formatCurrency(holding.averageBuyPrice)}</td>
+                        <td>${formatCurrency(holding.currentPrice)}</td>
+                        <td>${formatCurrency(currentValue)}</td>
+                        <td class="${pnlClass}">${formatCurrency(pnl)}</td>
+                        <td class="${pnlClass}">${formatPercentage(pnlPercentage)}</td>
+                    `;
+                    portfolioHoldingsBody.appendChild(row);
+                });
+
+                totalPortfolioValueSpan.textContent = formatCurrency(totalPortfolioValue);
+                totalPnlSpan.textContent = formatCurrency(totalUnrealizedPnl);
+                totalPnlSpan.classList.add(totalUnrealizedPnl >= 0 ? 'positive' : 'negative');
+
+
+            } catch (error) {
+                console.error("Portföy verileri yüklenirken hata oluştu:", error);
+                portfolioMessageP.style.color = '#dc3545';
+                portfolioMessageP.textContent = 'Portföy verileri yüklenemedi. Lütfen daha sonra tekrar deneyin.';
+                portfolioHoldingsBody.innerHTML = '<tr><td colspan="7" style="text-align: center; color: #dc3545;">Veri yüklenirken hata oluştu.</td></tr>';
+                totalPortfolioValueSpan.textContent = formatCurrency(0);
+                totalPnlSpan.textContent = formatCurrency(0);
+                totalPnlSpan.classList.remove('positive', 'negative');
+            }
+        }
+
+        // New function to fetch and display transaction history
+        async function fetchTransactionsData() {
+            transactionsBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #ccc;">İşlem geçmişi yükleniyor...</td></tr>';
+            transactionsMessageP.textContent = '';
+
+            try {
+                const response = await fetch('/api/transactions'); // New backend endpoint for transactions
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                console.log("Transactions Data:", data);
+
+                if (data.error) {
+                    transactionsMessageP.style.color = '#FF4C4C';
+                    transactionsMessageP.textContent = data.error;
+                    transactionsBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #dc3545;">İşlem geçmişi yüklenirken hata oluştu.</td></tr>';
+                    return;
+                }
+
+                if (!data.transactions || data.transactions.length === 0) {
+                    transactionsBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #ccc;">Henüz bir işlem bulunmamaktadır.</td></tr>';
+                    return;
+                }
+
+                transactionsBody.innerHTML = ''; // Clear loading row
+
+                data.transactions.forEach(transaction => {
+                    const row = document.createElement('tr');
+                    const transactionTypeClass = transaction.type === 'buy' ? 'buy' : 'sell';
+
+                    row.innerHTML = `
+                        <td>${formatTimestamp(transaction.timestamp)}</td>
+                        <td>${transaction.symbol}</td>
+                        <td class="transaction-type ${transactionTypeClass}">${transaction.type.toUpperCase()}</td>
+                        <td>${transaction.quantity.toFixed(6)}</td>
+                        <td>${formatCurrency(transaction.price)}</td>
+                    `;
+                    transactionsBody.appendChild(row);
+                });
+
+            } catch (error) {
+                console.error("İşlem geçmişi yüklenirken hata oluştu:", error);
+                transactionsMessageP.style.color = '#dc3545';
+                transactionsMessageP.textContent = 'İşlem geçmişi yüklenemedi. Lütfen daha sonra tekrar deneyin.';
+                transactionsBody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #dc3545;">Veri yüklenirken hata oluştu.</td></tr>';
+            }
+        }
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchPortfolioData();
+            fetchTransactionsData(); // Call the new function on load
+        });
+    </script>
+</body>
+</html>

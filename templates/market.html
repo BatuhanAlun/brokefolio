@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/changestyle.css">
+    <link rel="stylesheet" href="/static/market.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Brokefolio - Piyasa</title>
+
+</head>
+<body>
+    <div class="header">
+        <p>Brokefolio</p>
+        <div class="header-buttons">
+            <a href="/profile"><button>Profilim</button></a>
+            <a href="/portfolio"><button>Portföy</button></a>
+            <a href="/market"><button>Piyasa</button></a>
+            <a href="/logout"><button><i class="fas fa-sign-out-alt"></i> Çıkış Yap</button></a>
+        </div>
+    </div>
+
+    <div class="body">
+        <div class="market-page-container">
+            <h2 class="market-title">Brokefolio - Market</h2>
+
+            <div class="chart-and-trade-container">
+                <div class="chart-wrapper">
+                    <div class="tradingview-widget-container">
+                        <div id="tradingview_widget"></div>
+                        <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+                        <script type="text/javascript">
+                            let tvWidget; // Declare a global variable for the widget
+
+                            function createTradingViewWidget(symbol) {
+                                if (tvWidget) {
+                                    tvWidget.remove(); // Remove existing widget if it exists
+                                }
+                                tvWidget = new TradingView.widget(
+                                    {
+                                        "width": "100%",
+                                        "height": "100%",
+                                        "symbol": symbol, // Use the provided symbol
+                                        "interval": "D",
+                                        "timezone": "Etc/UTC",
+                                        "theme": "dark",
+                                        "style": "1",
+                                        "locale": "tr",
+                                        "enable_publishing": false,
+                                        "allow_symbol_change": true,
+                                        "container_id": "tradingview_widget"
+                                    }
+                                );
+                            }
+                            // Initial widget creation
+                            createTradingViewWidget('BTCUSDT');
+                        </script>
+                    </div>
+                </div>
+
+                <div class="trade-panel">
+                    <h4>İşlem Yap</h4>
+                    <div class="trade-form-group">
+                        <label for="trade-symbol">Sembol:</label>
+                        <input type="text" id="trade-symbol" name="trade-symbol" list="symbols-datalist" placeholder="Sembol ara (örn: BTCUSDT)" value="BTCUSDT">
+                        <datalist id="symbols-datalist">
+                        </datalist>
+                    </div>
+
+                    <div class="trade-form-group">
+                        <label for="current-price">Güncel Fiyat:</label>
+                        <span id="current-price" class="live-price-display">Yükleniyor...</span>
+                    </div>
+
+                    <div class="trade-form-group">
+                        <label for="quantity">Miktar:</label>
+                        <input type="number" id="quantity" name="quantity" placeholder="Miktar girin" min="0.000001" step="0.000001" required>
+                    </div>
+
+                    <div class="trade-form-group">
+                        <label for="total-price">Toplam Tutar (USD):</label>
+                        <input type="text" id="total-price" name="total-price" placeholder="Hesaplanıyor..." readonly>
+                    </div>
+
+                    <div class="trade-buttons">
+                        <button class="buy" onclick="submitTrade('buy')">Portfolyoma Ekle!</button>
+                    </div>
+
+                    <p id="trade-message" style="color: #FFD700; text-align: center; margin-top: 15px;"></p>
+                </div>
+            </div>
+
+            <h3 class="section-title">Haberler</h3>
+            <div class="widget-wrapper">
+                <div id="crypto-news-feed" class="news-container">
+                    <p style="color: #ccc; text-align: center; width: 100%;">Haberler yükleniyor...</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const tradeSymbolInput = document.getElementById('trade-symbol');
+        const currentPriceSpan = document.getElementById('current-price');
+        const quantityInput = document.getElementById('quantity');
+        const totalPriceInput = document.getElementById('total-price');
+        const tradeMessageP = document.getElementById('trade-message');
+        let currentPrice = 0;
+
+
+        function getTradingViewSymbol(rawSymbol) {
+                const symbolForBackend = rawSymbol.includes(':')
+                    ? rawSymbol.split(':')[1]
+                    : rawSymbol;
+
+                // Determine if it's crypto or stock for backend API
+                if (symbolForBackend.endsWith('USD') || symbolForBackend.endsWith('USDT') ) {
+                    
+                    const fullTradingViewSymbol = `BINANCE:${symbolForBackend}`;
+                    return fullTradingViewSymbol
+
+                } else { // Assumes other symbols are stocks
+                    const fullTradingViewSymbol = symbolForBackend;
+                    return fullTradingViewSymbol
+                }
+        }
+
+        async function fetchCurrentPrice(symbol) {
+            tradeMessageP.textContent = '';
+            currentPriceSpan.textContent = 'Yükleniyor...';
+            try {
+                // Ensure the symbol is in uppercase for API consistency
+                const response = await fetch(`/api/crypto-price?symbol=${symbol.toUpperCase()}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                if (data.price) {
+                    currentPrice = parseFloat(data.price);
+                    currentPriceSpan.textContent = `${currentPrice.toFixed(4)} USD`;
+                    calculateTotalPrice();
+                } else {
+                    currentPriceSpan.textContent = 'Fiyat bulunamadı.';
+                    currentPrice = 0;
+                }
+            } catch (error) {
+                console.error('Fiyat yüklenirken hata oluştu:', error);
+                currentPriceSpan.textContent = 'Aradığınız Sembole Ait Verimiz Bulunmuyor!';
+                currentPrice = 0;
+            }
+        }
+
+        function calculateTotalPrice() {
+            const quantity = parseFloat(quantityInput.value);
+            if (!isNaN(quantity) && currentPrice > 0) {
+                const total = quantity * currentPrice;
+                totalPriceInput.value = total.toFixed(4);
+            } else {
+                totalPriceInput.value = '';
+            }
+        }
+
+        tradeSymbolInput.addEventListener('input', () => {
+            const selectedSymbol = tradeSymbolInput.value.toUpperCase();
+            fetchCurrentPrice(selectedSymbol);
+            createTradingViewWidget(selectedSymbol); // Update the TradingView widget
+        });
+
+        quantityInput.addEventListener('input', calculateTotalPrice);
+
+        async function submitTrade(tradeType) {
+            tradeMessageP.textContent = 'İşlem yapılıyor...';
+            const symbol = tradeSymbolInput.value.toUpperCase();
+            const quantity = parseFloat(quantityInput.value);
+            const price = currentPrice;
+
+            if (isNaN(quantity) || quantity <= 0) {
+                tradeMessageP.style.color = '#FF4C4C';
+                tradeMessageP.textContent = 'Lütfen geçerli bir miktar girin.';
+                return;
+            }
+            if (price <= 0) {
+                tradeMessageP.style.color = '#FF4C4C';
+                tradeMessageP.textContent = 'Güncel fiyat mevcut değil, lütfen bekleyin.';
+                return;
+            }
+
+            const tradeData = {
+                symbol: symbol,
+                quantity: quantity,
+                price: price,
+                type: "BUY"
+            };
+
+            try {
+                const response = await fetch('/api/trade', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(tradeData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    tradeMessageP.style.color = '#4CAF50';
+                    tradeMessageP.textContent = result.message;
+                    quantityInput.value = '';
+                    totalPriceInput.value = '';
+                } else {
+                    tradeMessageP.style.color = '#FF4C4C';
+                    tradeMessageP.textContent = result.error || 'İşlem başarısız oldu.';
+                }
+            } catch (error) {
+                console.error('İşlem gönderilirken hata oluştu:', error);
+                tradeMessageP.style.color = '#FF4C4C';
+                tradeMessageP.textContent = 'Bağlantı hatası: İşlem gönderilemedi.';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const initialSymbol = tradeSymbolInput.value.toUpperCase();
+            fetchCurrentPrice(initialSymbol);
+            const finalForm = getTradingViewSymbol(initialSymbol)
+            createTradingViewWidget(finalForm);
+            fetchCombinedNews();
+        });
+
+
+        async function fetchCombinedNews() {
+            const newsFeedDiv = document.getElementById('crypto-news-feed');
+            newsFeedDiv.innerHTML = '<p style="color: #ccc; text-align: center; width: 100%;">Haberler yükleniyor...</p>';
+
+            try {
+                const response = await fetch('/api/news');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                newsFeedDiv.innerHTML = '';
+
+                if (data && data.results && data.results.length > 0) {
+                    data.results.forEach(news => {
+                        const newsItem = document.createElement('div');
+                        newsItem.classList.add('news-item');
+                        const dateText = news.date;
+
+                        newsItem.innerHTML = `
+                            <h4>${news.title}</h4>
+                            <p>${news.source} - <span class="source-date">${dateText}</span></p>
+                            <a href="${news.url}" target="_blank" rel="noopener">Devamını Oku <i class="fas fa-external-link-alt"></i></a>
+                        `;
+                        newsFeedDiv.appendChild(newsItem);
+                    });
+                } else {
+                    newsFeedDiv.innerHTML = '<p style="color: #ccc; text-align: center; width: 100%;">Şu an için haber bulunmuyor.</p>';
+                }
+            } catch (error) {
+                console.error("Haberler yüklenirken hata oluştu:", error);
+                newsFeedDiv.innerHTML = '<p style="color: #dc3545; text-align: center; width: 100%;">Haberler yüklenemedi. Lütfen daha sonra tekrar deneyin.</p>';
+            }
+        }
+    </script>
+</body>
+</html>

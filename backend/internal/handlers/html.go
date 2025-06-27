@@ -36,3 +36,6 @@ func PassRecoveryPageHandler(w http.ResponseWriter, req *http.Request) {
 func ChangePasswordRenderHandler(w http.ResponseWriter, req *http.Request) {
 	route.RenderTemplate(w, "changePassword.html", "")
 }
+func MarketHandler(w http.ResponseWriter, req *http.Request) {
+	route.RenderTemplate(w, "market.html", "")
+}
