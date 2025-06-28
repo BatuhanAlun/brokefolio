@@ -10,7 +10,7 @@ resetForm.addEventListener('submit', async (event) => {
 
 
     try{
-        const response = await fetch('http://127.0.0.1:8080/api/forgetPassword',{
+        const response = await fetch('http://localhost:8080/api/forgetPassword',{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -23,12 +23,7 @@ resetForm.addEventListener('submit', async (event) => {
 
 
         if (response.ok) {
-            myStatusPopup.show("success",result.message,2000);
-
-
-            setTimeout(function(){
-                window.location.replace("http://127.0.0.1:5500/login.html");
-            },3000)
+            showPopMessage("success", data.message || "İstek Gönderildi!", 2000, "/login");
         }else {
             let errorMessage = `Registration failed with status: ${response.status}`;
             try{
@@ -39,11 +34,11 @@ resetForm.addEventListener('submit', async (event) => {
             }catch(jsonError){
                 console.error('Failed to parse error JSON', jsonError)
             }
-            myStatusPopup.show("error", errorMessage, 2000)
+            showPopMessage("error", data.message || "Hata!", 2000);
         }
 
     }catch(error){
         console.error('Error:',error);
-        myStatusPopup.show("error",'Something Went Wrong!',2000);
+        showPopMessage("error", data.message || "Bağlantı Hatası!", 2000);
     }
 });

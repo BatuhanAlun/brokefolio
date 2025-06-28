@@ -7,10 +7,9 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func InitDB() *sql.DB {
-	connStr := "user=postgres dbname=brokefolio password=postgres host=localhost sslmode=disable" // Change this
+func InitDB(DB_CONNECTION_STRING string) *sql.DB {
 
-	db, err := sql.Open("postgres", connStr)
+	db, err := sql.Open("postgres", DB_CONNECTION_STRING)
 	if err != nil {
 		log.Fatalf("Error opening database: %v", err)
 	}

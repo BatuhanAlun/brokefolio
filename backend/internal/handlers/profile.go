@@ -37,7 +37,7 @@ func (h *ProfileDBHandler) ProfilePageHandler(w http.ResponseWriter, req *http.R
 	isAuthenticated, _ := req.Context().Value(middleware.IsAuthenticatedContextKey).(bool)
 
 	if !isAuthenticated {
-		http.Redirect(w, req, "/unauth", http.StatusUnauthorized)
+		http.Redirect(w, req, "/unauthorized", http.StatusUnauthorized)
 	}
 
 	userID, _ := req.Context().Value(middleware.UserIDContextKey).(string)

@@ -1,0 +1,567 @@
+        /* Reusing common styles from market.html to maintain consistency */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #2E1A47; /* Dark background */
+            color: #E0E0E0; /* Light text */
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .header {
+            background-color: #4C2E75; /* Darker purple */
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            border-bottom: 2px solid #5C3D80;
+        }
+
+        .header p {
+            color: white;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .header-buttons button {
+            background-color: #B76BC4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-left: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .header-buttons button:hover {
+            background-color: #A05BB0;
+            transform: translateY(-1px);
+        }
+
+        .header-buttons button i {
+            margin-right: 8px;
+        }
+
+        /* Portfolio Page Specific Container */
+        .portfolio-page-container {
+            max-width: 1400px; /* Adjusted max-width for portfolio table */
+            width: 100%;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #3E245F;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            align-items: center;
+        }
+
+        h2.portfolio-title, h3.section-title {
+            color: #B76BC4;
+            font-size: 36px;
+            margin-bottom: 5px;
+            text-align: center;
+            width: 100%;
+        }
+
+        h3.section-title {
+            font-size: 28px;
+            margin-top: 15px;
+            color: #E2B9F3;
+            border-bottom: 2px solid #5C3D80;
+            padding-bottom: 10px;
+        }
+
+        /* Portfolio Summary */
+        .portfolio-summary {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+
+        .summary-card {
+            background-color: #4C2E75;
+            border-radius: 10px;
+            padding: 20px;
+            flex: 1;
+            min-width: 250px;
+            max-width: 350px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            color: #E0E0E0;
+        }
+
+        .summary-card h4 {
+            color: #B76BC4;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .summary-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #E2B9F3;
+        }
+
+        .summary-value.positive {
+            color: #4CAF50; /* Green */
+        }
+        .summary-value.negative {
+            color: #F44336; /* Red */
+        }
+
+        /* Portfolio Holdings Table */
+        .holdings-table-container, .transactions-table-container {
+            width: 100%;
+            overflow-x: auto; /* Enable horizontal scrolling on small screens */
+            background-color: #2A1A40;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            padding: 15px;
+        }
+
+        .holdings-table, .transactions-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px; /* Ensure table doesn't get too narrow */
+        }
+
+        .holdings-table th, .holdings-table td,
+        .transactions-table th, .transactions-table td {
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 1px solid #5C3D80;
+            color: #E0E0E0;
+        }
+
+        .holdings-table th, .transactions-table th {
+            background-color: #4C2E75;
+            color: #B76BC4;
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .holdings-table tbody tr:nth-child(even),
+        .transactions-table tbody tr:nth-child(even) {
+            background-color: #3E245F; /* Slightly different row color */
+        }
+
+        .holdings-table tbody tr:hover,
+        .transactions-table tbody tr:hover {
+            background-color: #5C3D80; /* Hover effect */
+            cursor: pointer;
+        }
+
+        .holdings-table .value-positive {
+            color: #4CAF50; /* Green for positive P&L */
+            font-weight: 600;
+        }
+
+        .holdings-table .value-negative {
+            color: #F44336; /* Red for negative P&L */
+            font-weight: 600;
+        }
+        
+        /* Transaction specific styles for Buy/Sell text */
+        .transactions-table .transaction-type.buy {
+            color: #4CAF50; /* Green for buy */
+            font-weight: 600;
+        }
+        .transactions-table .transaction-type.sell {
+            color: #F44336; /* Red for sell */
+            font-weight: 600;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1000px) {
+            .portfolio-page-container {
+                padding: 15px;
+                margin: 20px auto;
+                gap: 20px;
+            }
+            h2.portfolio-title {
+                font-size: 30px;
+            }
+            h3.section-title {
+                font-size: 24px;
+            }
+            .summary-card {
+                min-width: 200px;
+                max-width: 100%;
+            }
+            .holdings-table th, .holdings-table td,
+            .transactions-table th, .transactions-table td {
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 10px;
+                padding: 15px;
+            }
+            .header p {
+                font-size: 24px;
+            }
+            .header-buttons button {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+            h2.portfolio-title {
+                font-size: 26px;
+            }
+            h3.section-title {
+                font-size: 20px;
+            }
+            .summary-card {
+                min-width: 100%; /* Stack cards on very small screens */
+            }
+            .holdings-table-container, .transactions-table-container {
+                padding: 10px;
+            }
+            .holdings-table th, .holdings-table td,
+            .transactions-table th, .transactions-table td {
+                padding: 8px;
+            }
+        }
+
+        /* --- NEW: Modal Styles (add to portfolio.css) --- */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
+    display: flex; /* Use flexbox for centering */
+    align-items: center; /* Center vertically */
+    justify-content: center; /* Center horizontally */
+}
+
+.modal-content {
+    background-color: #1A0D2F; /* Dark background */
+    margin: auto; /* Auto margin for centering */
+    padding: 30px;
+    border: 1px solid #3a1a63; /* Border color */
+    border-radius: 10px;
+    width: 90%; /* Responsive width */
+    max-width: 500px; /* Max width for larger screens */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    position: relative;
+    color: #E0E0E0; /* Light text color */
+}
+
+.modal-content h2 {
+    color: #BBBBBB;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.modal-content p {
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+
+.modal-content strong {
+    color: #FFD700; /* Highlight important values */
+}
+
+.modal-content span {
+    font-weight: 600;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #BBBBBB;
+}
+
+.modal-content input[type="number"] {
+    width: calc(100% - 20px); /* Adjust for padding */
+    padding: 10px;
+    border: 1px solid #3a1a63;
+    border-radius: 5px;
+    background-color: #261642; /* Darker input background */
+    color: #E0E0E0;
+    font-size: 1em;
+}
+
+.modal-content input[type="number"]:focus {
+    outline: none;
+    border-color: #FFD700;
+    box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.3);
+}
+
+.modal-content .message {
+    text-align: center;
+    margin-top: 15px;
+    font-weight: 600;
+}
+
+.modal-content #confirm-sell-button {
+    background-color: #FF4C4C; /* Red for sell button */
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: 600;
+    display: block; /* Make it a block element */
+    width: 100%; /* Full width button */
+    margin-top: 25px;
+    transition: background-color 0.3s ease;
+}
+
+.modal-content #confirm-sell-button:hover {
+    background-color: #e03f3f;
+}
+
+.close-button {
+    color: #BBBBBB;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #E0E0E0;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Style for the new "Sell" button in the table */
+.sell-button {
+    background-color: #FF4C4C; /* Red background for sell */
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.sell-button:hover {
+    background-color: #e03f3f;
+}
+
+/* Make sure your existing .transactions-table styles are still present */
+/* Example for transaction type coloring (from previous fix) */
+.transaction-buy {
+    color: #4CAF50; /* Green */
+}
+.transaction-sell {
+    color: #FF4C4C; /* Red */
+}
+
+/* --- NEW & IMPROVED: Sell Section Styles for Full Width and Horizontal Layout (Matching your Purple Theme) --- */
+.sell-section {
+    background-color: #3E245F; /* Matches portfolio-page-container background */
+    border: 1px solid #5C3D80; /* Matches header border-bottom, table borders */
+    padding: 30px; /* Consistent padding */
+    border-radius: 10px; /* Consistent border-radius */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Consistent shadow */
+    margin-top: 30px;
+    width: 100%; /* Ensure it takes full width of its parent */
+    box-sizing: border-box; /* Include padding and border in the width */
+
+    /* Use Flexbox for horizontal layout */
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+    align-items: flex-end; /* Align items to the bottom, useful for labels/inputs */
+    gap: 20px; /* Space between elements */
+    color: #E0E0E0; /* Light text color */
+}
+
+.sell-section .form-group {
+    flex: 1; /* Allow form groups to grow and shrink */
+    min-width: 250px; /* Minimum width before wrapping */
+    margin-bottom: 0; /* Remove default margin */
+}
+
+.sell-section label {
+    display: block;
+    margin-bottom: 8px;
+    color: #B76BC4; /* Matches h4 in summary card, section titles */
+    font-size: 0.95em;
+    font-weight: 600;
+}
+
+.sell-section select,
+.sell-section input[type="number"] {
+    width: 100%;
+    padding: 12px; /* Slightly more padding */
+    border: 1px solid #5C3D80; /* Darker border for inputs, matches other borders */
+    border-radius: 6px; /* Slightly more rounded */
+    background-color: #4C2E75; /* Darker input background, matches header background */
+    color: #E0E0E0;
+    font-size: 1.05em; /* Slightly larger font */
+    -webkit-appearance: none; /* Remove default select styling */
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.sell-section select {
+    /* Custom arrow for dropdown */
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23E2B9F3" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/><path d="M0 0h24v24H0z" fill="none"/></svg>'); /* Purple arrow */
+    background-repeat: no-repeat;
+    background-position: right 12px center; /* Position arrow */
+    padding-right: 40px; /* Make space for the arrow */
+    cursor: pointer;
+}
+
+.sell-section input[type="number"]::-webkit-inner-spin-button,
+.sell-section input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.sell-section input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.sell-section input[type="number"]:focus,
+.sell-section select:focus {
+    outline: none;
+    border-color: #E2B9F3; /* Light purple focus border, matches summary-value */
+    box-shadow: 0 0 0 3px rgba(179, 107, 196, 0.4); /* Glow matching B76BC4 */
+}
+
+.sell-section .asset-info {
+    flex-basis: 200px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: 5px;
+    margin-bottom: 0;
+}
+
+.sell-section .asset-info p {
+    margin: 0;
+    font-size: 0.95em;
+    color: #BBBBBB; /* Slightly softer white */
+}
+
+.sell-section .asset-info span {
+    font-weight: 700;
+    color: #E2B9F3; /* Light purple for values, matches summary-value */
+}
+
+.sell-section #sell-total-value {
+    flex-basis: 200px;
+    flex-grow: 1;
+    font-size: 1.3em;
+    font-weight: 700;
+    text-align: right;
+    align-self: flex-end;
+    padding-bottom: 5px;
+    color: #E2B9F3; /* Light purple for total value */
+    margin-bottom: 0;
+}
+
+.sell-section #execute-sell-button {
+    background-color: #F44336; /* Red for sell button, matches negative value color */
+    color: white;
+    padding: 14px 30px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.15em;
+    font-weight: 700;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin-left: auto; /* Push button to the right */
+}
+
+.sell-section #execute-sell-button:hover {
+    background-color: #D32F2F; /* Darker red on hover */
+    transform: translateY(-2px);
+}
+
+.sell-section #execute-sell-button:active {
+    transform: translateY(0);
+}
+
+.sell-section .message {
+    text-align: center;
+    margin-top: 5px;
+    font-weight: 600;
+    min-height: 20px;
+    flex-basis: 100%;
+    order: 10;
+    color: #E2B9F3; /* Default message color matching theme */
+}
+
+/* Ensure success and error messages override default for clear feedback */
+.sell-section .message.success {
+    color: #4CAF50; /* Green for success */
+}
+.sell-section .message.error {
+    color: #F44336; /* Red for error */
+}
+
+/* --- Responsive Adjustments for Sell Section (copied from your existing media queries) --- */
+@media (max-width: 1000px) {
+    .sell-section {
+        padding: 25px; /* Slightly less padding */
+    }
+    .sell-section .form-group {
+        min-width: 200px; /* Allow shrinking a bit more */
+    }
+}
+@media (max-width: 768px) {
+    .sell-section {
+        flex-direction: column; /* Stack vertically on smaller screens */
+        align-items: stretch; /* Stretch items to fill width */
+        padding: 20px;
+        gap: 15px; /* Reduce gap when stacked */
+    }
+    .sell-section .form-group,
+    .sell-section .asset-info,
+    .sell-section #sell-total-value {
+        flex-basis: auto;
+        min-width: unset;
+        width: 100%;
+        text-align: left;
+        padding-bottom: 0;
+        margin-left: 0;
+    }
+    .sell-section #execute-sell-button {
+        margin-left: 0;
+        width: 100%;
+    }
+    .sell-section .asset-info p,
+    .sell-section #sell-total-value {
+        text-align: left;
+    }
+    .sell-section .message {
+        text-align: center;
+    }
+}

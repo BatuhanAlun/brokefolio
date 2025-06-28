@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Unauthorized - Brokefolio</title>
+    <title>Oops! - Brokefolio</title>
     <link rel="stylesheet" href="/static/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/assets/f5/css/all.min.css">
 </head>
 <body>
     <div class="header">
@@ -19,17 +19,17 @@
     <div class="body">
         <div class="login-form" style="text-align: center;">
             <p class="big-text" style="color: #E74C3C; margin-bottom: 20px;">
-                <i class="fas fa-lock" style="margin-right: 15px;"></i>Erişim Engellendi!
+                <i class="fas fa-exclamation-triangle" style="margin-right: 15px;"></i>Bir şeyler ters gitti!
             </p>
             <p class="not-opac" style="font-size: 24px; margin-bottom: 30px;">
-                Bu sayfayı görüntülemek için giriş yapmanız gerekiyor.
+                Üzgünüz, beklenmedik bir hata oluştu.
             </p>
         </div>
     </div>
-    <script>
+        <script>
             setTimeout(function() {
             window.location.replace("/login");
-            }, 3000);
+            }, 5000);
     </script>
 </body>
 </html>

@@ -11,10 +11,17 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/joho/godotenv"
 	"github.com/rs/cors"
 )
 
 func main() {
+
+	if err := godotenv.Load("../../../.env"); err != nil {
+		log.Println("No .env file found, assuming environment variables are set externally.")
+	}
+
+	dbConnectionString := os.Getenv("DB_CONNECTION_STRING")
 
 	route.InitTemplates()
 
@@ -25,7 +32,7 @@ func main() {
 
 	staticPath := filepath.Join(wd, "../../../static")
 
-	db := database.InitDB()
+	db := database.InitDB(dbConnectionString)
 	defer db.Close()
 
 	router := http.NewServeMux()
@@ -36,31 +43,75 @@ func main() {
 	sessionHandler := middleware.NewSessionMiddleware(db)
 	profileHandler := handlers.NewProfileHandler(db)
 	tradeHandler := handlers.NewBuyHandler(db)
+	priceFetcher := &handlers.HTTPPriceFetcher{}
+	portfolioHandler := handlers.NewPortfolioHandler(db, priceFetcher)
+	transactionHandler := handlers.NewTransactionsHandler(db)
+	mailMiddlewareHandler := middleware.NewMailMiddlewareDB(db)
+	logoutHandler := handlers.NewLogOutHandler(db)
 
+	// Static files
 	fs := http.FileServer(http.Dir(staticPath))
 	router.Handle("/static/", http.StripPrefix("/static/", fs))
 
+	// Public API routes
 	router.HandleFunc("POST /api/login", loginHandler.LoginHandler)
 	router.HandleFunc("POST /api/register", registerHandler.RegisterHandler)
 	router.HandleFunc("POST /api/forgetPassword", mailHandler.MailResetHandler)
-	router.Handle("POST /api/trade", sessionHandler.CheckSessionMiddleware(http.HandlerFunc(tradeHandler.TradeHandler)))
+	router.HandleFunc("POST /api/user/change-password-mail", mailHandler.PasswordResetUsingMailHandler)
+	router.HandleFunc("GET /api/news", handlers.CombinedNewsHandler)
+	router.HandleFunc("GET /api/crypto-price", handlers.StockPriceHandler)
 
-	router.HandleFunc("/api/news", handlers.CombinedNewsHandler)
-	router.Handle("/homepage", sessionHandler.CheckSessionMiddleware(http.HandlerFunc(handlers.HomeHandler)))
-	router.Handle("/market", sessionHandler.CheckSessionMiddleware(http.HandlerFunc(handlers.MarketHandler)))
-
-	router.HandleFunc("/api/crypto-price", handlers.StockPriceHandler)
-	//portfolio
-	router.Handle("/profile", sessionHandler.CheckSessionMiddleware(http.HandlerFunc(profileHandler.ProfilePageHandler)))
+	// Public page routes
 	router.HandleFunc("/login", handlers.LoginPageHandler)
 	router.HandleFunc("/register", handlers.RegisterPageHandler)
 	router.HandleFunc("/passrecover", handlers.PassRecoveryPageHandler)
-	//ChangePasswordRenderHandler
+
+	// Password reset via email link
+	router.Handle("/reset-password", mailMiddlewareHandler.CheckMailParameterMiddleware(http.HandlerFunc(handlers.MailPasswordChangeHandler)))
+
+	// Protected trade route
+	router.Handle("POST /api/trade", sessionHandler.CheckSessionMiddleware(http.HandlerFunc(tradeHandler.TradeHandler)))
+
+	// Authenticated API routes
+	router.Handle("PUT /api/user/update-profile",
+		middleware.MiddlewareAuthJWT(http.Handler(
+			sessionHandler.CheckSessionMiddleware(http.HandlerFunc(profileHandler.UpdateProfileHandler))),
+		),
+	)
+	router.Handle("DELETE /api/user/delete-account",
+		middleware.MiddlewareAuthJWT(http.Handler(
+			sessionHandler.CheckSessionMiddleware(http.HandlerFunc(profileHandler.DeleteProfileHandler))),
+		),
+	)
+	router.Handle("POST /api/user/change-password",
+		middleware.MiddlewareAuthJWT(http.Handler(
+			sessionHandler.CheckSessionMiddleware(http.HandlerFunc(profileHandler.ChangePasswordHandler))),
+		),
+	)
+	router.Handle("/api/portfolio",
+		middleware.MiddlewareAuthJWT(http.Handler(
+			sessionHandler.CheckSessionMiddleware(http.HandlerFunc(portfolioHandler.PortfolioHandler))),
+		),
+	)
+	router.Handle("/api/transactions",
+		middleware.MiddlewareAuthJWT(http.Handler(
+			sessionHandler.CheckSessionMiddleware(http.HandlerFunc(transactionHandler.TransactionsHandler))),
+		),
+	)
+
+	// Session/middleware-protected pages
+	router.Handle("/homepage", sessionHandler.CheckSessionMiddleware(http.HandlerFunc(handlers.HomeHandler)))
+	router.Handle("/market", sessionHandler.CheckSessionMiddleware(http.HandlerFunc(handlers.MarketHandler)))
+	router.Handle("/portfolio", sessionHandler.CheckSessionMiddleware(http.HandlerFunc(handlers.PortfolioPageHandler)))
+	router.Handle("/profile", sessionHandler.CheckSessionMiddleware(http.HandlerFunc(profileHandler.ProfilePageHandler)))
 	router.Handle("/change-password", sessionHandler.CheckSessionMiddleware(http.HandlerFunc(handlers.ChangePasswordRenderHandler)))
-	//user-apis
-	router.Handle("PUT /api/user/update-profile", middleware.MiddlewareAuthJWT(http.Handler(sessionHandler.CheckSessionMiddleware(http.HandlerFunc(profileHandler.UpdateProfileHandler)))))
-	router.Handle("DELETE /api/user/delete-account", middleware.MiddlewareAuthJWT(http.Handler(sessionHandler.CheckSessionMiddleware(http.HandlerFunc(profileHandler.DeleteProfileHandler)))))
-	router.Handle("POST /api/user/change-password", middleware.MiddlewareAuthJWT(http.Handler(sessionHandler.CheckSessionMiddleware(http.HandlerFunc(profileHandler.ChangePasswordHandler)))))
+
+	// Logout
+	router.HandleFunc("/logout", logoutHandler.LogoutHandler)
+
+	// Error/Fallback pages
+	router.HandleFunc("/unauthorized", handlers.UnauthPageHandler)
+	router.HandleFunc("/went-wrong", handlers.WentWrongHandler)
 
 	allowedOriginsStr := os.Getenv("ALLOWED_ORIGINS")
 	if allowedOriginsStr == "" {

@@ -1,6 +1,3 @@
-// static/popup-message.js
-
-// Get the popup element and its internal components
 const popMessageElement = document.getElementById('popMessage');
 const popIconElement = popMessageElement ? popMessageElement.querySelector('.pop-icon') : null;
 const popTextElement = popMessageElement ? popMessageElement.querySelector('.pop-text') : null;
@@ -21,14 +18,14 @@ function showPopMessage(type, message, duration = 3000, redirectUrl = null) {
         return;
     }
 
-    // Clear any existing classes and reset for new message
-    popMessageElement.className = 'pop-message'; // Reset to base class
+
+    popMessageElement.className = 'pop-message';
     popMessageElement.classList.add(type);
 
     popTextElement.textContent = message;
 
-    // Set icon and spinner based on type
-    if (popIconElement) popIconElement.innerHTML = ''; // Clear existing icon
+
+    if (popIconElement) popIconElement.innerHTML = '';
 
     switch (type) {
         case 'success':
@@ -44,24 +41,23 @@ function showPopMessage(type, message, duration = 3000, redirectUrl = null) {
             if (popSpinnerElement) popSpinnerElement.style.display = 'none';
             break;
         case 'loading':
-            // Spinner is already inside .pop-spinner
-            if (popIconElement) popIconElement.innerHTML = ''; // No fixed icon, just spinner
-            if (popSpinnerElement) popSpinnerElement.style.display = 'inline-block'; // Show spinner
+            if (popIconElement) popIconElement.innerHTML = '';
+            if (popSpinnerElement) popSpinnerElement.style.display = 'inline-block';
             break;
         default:
             if (popIconElement) popIconElement.innerHTML = '<i class="fas fa-info-circle"></i>';
             if (popSpinnerElement) popSpinnerElement.style.display = 'none';
     }
 
-    // Make the popup visible
+ 
     popMessageElement.classList.add('active');
 
-    // Clear any previous timeout
+
     if (popMessageTimeoutId) {
         clearTimeout(popMessageTimeoutId);
     }
 
-    // Auto-hide unless it's a 'loading' message
+
     if (type !== 'loading') {
         popMessageTimeoutId = setTimeout(() => {
             hidePopMessage();
@@ -72,20 +68,16 @@ function showPopMessage(type, message, duration = 3000, redirectUrl = null) {
     }
 }
 
-/**
- * Hides the popup message.
- */
 function hidePopMessage() {
     if (!popMessageElement) return;
 
-    clearTimeout(popMessageTimeoutId); // Clear any pending hide timeout
+    clearTimeout(popMessageTimeoutId);
     popMessageElement.classList.remove('active');
 
-    // Optional: clear content after transition to reset for next message
     setTimeout(() => {
-        popMessageElement.className = 'pop-message'; // Reset classes
+        popMessageElement.className = 'pop-message';
         if (popIconElement) popIconElement.innerHTML = '';
         if (popTextElement) popTextElement.textContent = '';
         if (popSpinnerElement) popSpinnerElement.style.display = 'none';
-    }, 500); // Matches CSS transition duration
+    }, 500); 
 }

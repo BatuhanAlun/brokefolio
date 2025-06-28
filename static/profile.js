@@ -1,7 +1,3 @@
-// static/profile.js
-
-// Ensure popup-message.js is loaded BEFORE this script in your HTML
-// for 'showPopMessage' function to be available globally.
 
 function getCookie(name) {
     const value = `; ${document.cookie}`;
@@ -11,7 +7,6 @@ function getCookie(name) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // --- Get DOM Elements ---
     // Buttons
     const changePasswordBtn = document.getElementById('changePasswordBtn');
     const editProfileBtn = document.getElementById('editProfileBtn');
@@ -45,15 +40,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
     const authToken = getCookie('authToken');
 
-    // --- State Variable ---
-    let isEditing = false; // Tracks whether the profile is currently in edit mode
-    let selectedFile = null; // To store the selected new avatar file
 
-    // --- Utility Function to Toggle Edit Mode ---
+    let isEditing = false;
+    let selectedFile = null;
+
+
     function toggleEditMode(enable) {
         isEditing = enable;
 
-        // Toggle visibility of display spans vs. input fields
+
         const infoItems = document.querySelectorAll('.user-info-grid .info-item');
         infoItems.forEach(item => {
             const displaySpan = item.querySelector('span');
@@ -62,41 +57,38 @@ document.addEventListener('DOMContentLoaded', () => {
             if (displaySpan && editInput) {
                 if (enable) {
                     displaySpan.style.display = 'none';
-                    editInput.style.display = 'block'; // Make input visible
-                    editInput.value = displaySpan.textContent; // Pre-fill input with current display value
+                    editInput.style.display = 'block';
+                    editInput.value = displaySpan.textContent;
                 } else {
-                    displaySpan.style.display = 'inline'; // Or 'block' depending on desired layout
+                    displaySpan.style.display = 'inline';
                     editInput.style.display = 'none';
                 }
             }
         });
 
-        // Toggle visibility of action buttons
+
         if (enable) {
             editProfileBtn.style.display = 'none';
-            saveProfileBtn.style.display = 'flex'; // Show Save button
-            cancelEditBtn.style.display = 'flex';   // Show Cancel button
-            changePasswordBtn.style.display = 'none'; // Hide change password button during edit
-            deleteAccountBtn.style.display = 'none'; // Hide delete button during edit
-            profileAvatarSection.classList.add('editing'); // Enable avatar overlay
+            saveProfileBtn.style.display = 'flex';
+            cancelEditBtn.style.display = 'flex';
+            changePasswordBtn.style.display = 'none';
+            deleteAccountBtn.style.display = 'none'; 
+            profileAvatarSection.classList.add('editing');
         } else {
-            editProfileBtn.style.display = 'flex'; // Show Edit button
+            editProfileBtn.style.display = 'flex';
             saveProfileBtn.style.display = 'none';
             cancelEditBtn.style.display = 'none';
-            changePasswordBtn.style.display = 'flex'; // Show other buttons again
+            changePasswordBtn.style.display = 'flex';
             deleteAccountBtn.style.display = 'flex';
-            profileAvatarSection.classList.remove('editing'); // Disable avatar overlay
-            // Reset avatar preview if not saved
+            profileAvatarSection.classList.remove('editing');
+
             if (selectedFile) {
-                avatarImage.src = avatarImage.dataset.originalSrc || avatarImage.src; // Revert to original if cancelled
+                avatarImage.src = avatarImage.dataset.originalSrc || avatarImage.src;
                 selectedFile = null;
             }
         }
     }
 
-    // --- Event Listeners ---
-
-    // Change Password Button (Existing Logic)
     if (changePasswordBtn) {
         changePasswordBtn.addEventListener('click', () => {
             showPopMessage("info", "Şifre Değiştirme Sayfasına Yönlendiriliyorsunuz", 1500);
@@ -108,49 +100,46 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error("Error: changePasswordBtn element not found!");
     }
 
-    // Edit Profile Button (New Logic)
+
     if (editProfileBtn) {
         editProfileBtn.addEventListener('click', () => {
             toggleEditMode(true); // Enable edit mode
-            // Store original avatar source for potential revert on cancel
             avatarImage.dataset.originalSrc = avatarImage.src;
         });
     } else {
         console.error("Error: editProfileBtn element not found!");
     }
 
-    // Cancel Edit Button (New Logic)
     if (cancelEditBtn) {
         cancelEditBtn.addEventListener('click', () => {
-            // Revert inputs to original values (optional, but good UX)
             profileNameInput.value = profileNameDisplay.textContent;
             profileSurnameInput.value = profileSurnameDisplay.textContent;
             profileUsernameInput.value = profileUsernameEditableDisplay.textContent;
             profileEmailInput.value = profileEmailEditableDisplay.textContent;
 
-            toggleEditMode(false); // Disable edit mode
+            toggleEditMode(false);
             showPopMessage("info", "Profil düzenleme iptal edildi.", 1500);
         });
     } else {
         console.error("Error: cancelEditBtn element not found!");
     }
 
-    // NEW: Handle avatar image selection
+
     if (avatarUploadInput && avatarImage) {
         avatarUploadInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
             if (file) {
-                selectedFile = file; // Store the file
+                selectedFile = file;
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    avatarImage.src = e.target.result; // Display preview
+                    avatarImage.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
             }
         });
     }
 
-    // Save Profile Button (Modified Logic for Avatar Upload)
+
     if (saveProfileBtn) {
         saveProfileBtn.addEventListener('click', async () => {
             showPopMessage("loading", "Profil güncelleniyor...");
@@ -162,7 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
             formData.append('email', profileEmailInput.value.trim());
 
             if (selectedFile) {
-                formData.append('avatar', selectedFile); // Append the new avatar file
+                formData.append('avatar', selectedFile);
             }
 
             try {
@@ -171,17 +160,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch('/api/user/update-profile', {
                     method: 'PUT',
                     headers: {
-                        // For FormData, 'Content-Type' is usually set automatically by the browser
-                        // Do NOT manually set 'Content-Type': 'application/json' when using FormData
+
+
                         'Authorization': `Bearer ${authToken}`
                     },
-                    body: formData // Send FormData directly
+                    body: formData
                 });
 
                 if (response.ok) {
-                    const responseData = await response.json(); // Assuming backend sends back updated data or new avatar URL
+                    const responseData = await response.json();
 
-                    // Update displayed text fields
+
                     profileNameDisplay.textContent = formData.get('name');
                     profileSurnameDisplay.textContent = formData.get('surname');
                     profileUsernameDisplay.textContent = `@${formData.get('username')}`;
@@ -189,36 +178,30 @@ document.addEventListener('DOMContentLoaded', () => {
                     profileEmailDisplay.textContent = formData.get('email');
                     profileEmailEditableDisplay.textContent = formData.get('email');
 
-                    // Update avatar image if a new one was uploaded and a new URL is returned
                     if (responseData.avatarURL) {
                         avatarImage.src = responseData.avatarURL;
                     } else if (selectedFile) {
-                         // If no new URL, but a file was selected, use the preview. This is a fallback.
-                         // Ideally, backend confirms the new URL.
-                         // For a Go backend, you might need to re-fetch profile or update `{{.AvatarURL}}`
-                         // with the new path after successful upload.
                     } else {
-                        // If no new avatar, and no file was selected, ensure initials are updated if name/surname changed
                         const initials = (formData.get('name').charAt(0) || '') + (formData.get('surname').charAt(0) || '');
                         if (initials) {
                              avatarImage.src = `https://via.placeholder.com/200/B76BC4/FFFFFF?text=${initials.toUpperCase()}`;
                         }
                     }
 
-                    selectedFile = null; // Clear the selected file after successful upload
+                    selectedFile = null;
                     toggleEditMode(false);
                     showPopMessage("success", "Profil başarıyla güncellendi!", 2000);
                 } else {
                     const errorData = await response.json();
                     showPopMessage("error", `Profil güncellenirken hata oluştu: ${errorData.message || response.statusText}`, 4000);
-                    // Revert avatar preview on error
+
                     avatarImage.src = avatarImage.dataset.originalSrc || avatarImage.src;
                     selectedFile = null;
                 }
             } catch (error) {
                 console.error('Profil güncelleme hatası:', error);
                 showPopMessage("error", `Profil güncellenirken bir ağ hatası oluştu: ${error.message || 'Bilinmeyen Hata'}`, 4000);
-                // Revert avatar preview on network error
+
                 avatarImage.src = avatarImage.dataset.originalSrc || avatarImage.src;
                 selectedFile = null;
             }
