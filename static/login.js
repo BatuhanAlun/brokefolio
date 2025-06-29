@@ -23,12 +23,9 @@ loginForm.addEventListener('submit', async (event) => {
 
 
         if (response.ok) {
-            myStatusPopup.show(true,'Succefully Logged In, Redirecting...',2000);
+            // myStatusPopup.show(true,'Succefully Logged In, Redirecting...',2000);
+            showPopMessage("success", "Başarıyla Giriş Yapıldı!",2000,"/homepage"); 
 
-
-            setTimeout(function(){
-                window.location.replace("http://localhost:8080/homepage");
-            },3000)
         }else {
             let errorMessage = `Registration failed with status: ${response.status}`;
             try{
@@ -39,11 +36,13 @@ loginForm.addEventListener('submit', async (event) => {
             }catch(jsonError){
                 console.error('Failed to parse error JSON', jsonError)
             }
-            myStatusPopup.show(false, errorMessage, 2000)
+            // myStatusPopup.show(false, errorMessage, 2000)
+            showPopMessage("error", errorMessage || "Hata!", 2000);
         }
 
     }catch(error){
         console.error('Error:',error);
-        myStatusPopup.show(false,'Something Went Wrong!',2000);
+        // myStatusPopup.show(false,'Something Went Wrong!',2000);
+        showPopMessage("error", errorMessage || "Bağlantı Hatası!", 2000);
     }
 });

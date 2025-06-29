@@ -17,7 +17,7 @@ import (
 
 func main() {
 
-	if err := godotenv.Load("../../../.env"); err != nil {
+	if err := godotenv.Load(".env"); err != nil {
 		log.Println("No .env file found, assuming environment variables are set externally.")
 	}
 
@@ -30,7 +30,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	staticPath := filepath.Join(wd, "../../../static")
+	staticPath := filepath.Join(wd, "./static")
 
 	db := database.InitDB(dbConnectionString)
 	defer db.Close()

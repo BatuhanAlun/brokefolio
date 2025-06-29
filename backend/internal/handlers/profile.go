@@ -123,7 +123,7 @@ func (h *ProfileDBHandler) UpdateProfileHandler(w http.ResponseWriter, req *http
 		}
 	}
 
-	avatarPath := "../../../static/default-avatar.png"
+	avatarPath := "./static/default-avatar.png"
 	file, handler, err := req.FormFile("avatar")
 	if err == nil {
 		defer file.Close()
@@ -137,7 +137,7 @@ func (h *ProfileDBHandler) UpdateProfileHandler(w http.ResponseWriter, req *http
 
 		fileName := uuid.New().String() + fileExt
 
-		uploadDir := "../../../static/avatars"
+		uploadDir := "./static/avatars"
 		if _, err := os.Stat(uploadDir); os.IsNotExist(err) {
 			err = os.MkdirAll(uploadDir, 0755)
 			if err != nil {
@@ -161,7 +161,7 @@ func (h *ProfileDBHandler) UpdateProfileHandler(w http.ResponseWriter, req *http
 			utils.SendJSONError(w, "Sunucu hatası: Avatar yüklenemedi.", http.StatusInternalServerError)
 			return
 		}
-		avatarPath = "../../../static/avatars/" + fileName
+		avatarPath = "./static/avatars/" + fileName
 	} else if err != http.ErrMissingFile {
 		log.Printf("Error getting avatar file: %v", err)
 		utils.SendJSONError(w, "Avatar yüklenirken bir hata oluştu.", http.StatusBadRequest)

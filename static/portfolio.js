@@ -113,7 +113,7 @@ const totalPortfolioValueSpan = document.getElementById('total-portfolio-value')
                 symbol: symbol,
                 quantity: quantityToSell,
                 price: price,
-                type: 'sell'
+                type: "SELL"
             };
 
             try {
@@ -260,18 +260,16 @@ const totalPortfolioValueSpan = document.getElementById('total-portfolio-value')
                 data.transactions.forEach(transaction => {
                     const row = document.createElement('tr');
 
-                    let typeDisplay = transaction.type.toUpperCase();
+                    let typeDisplay = transaction.type.trim().toUpperCase();
                     let colorClass = '';
-
-                    // Ensure consistency with backend 'buy'/'sell' lowercase types
-                    if (transaction.type === 'buy') {
-                        colorClass = 'transaction-buy';
-                    } else if (transaction.type === 'sell') {
-                        colorClass = 'transaction-sell';
+                    
+                    if (typeDisplay === 'BUY') {
+                        colorClass = 'buy';
+                    } else if (typeDisplay === 'SELL') {
+                        colorClass = 'sell';
                     } else {
                         colorClass = 'transaction-neutral';
                     }
-
                     row.innerHTML = `
                         <td>${formatTimestamp(transaction.timestamp)}</td>
                         <td>${transaction.symbol}</td>

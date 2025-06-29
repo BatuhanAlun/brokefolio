@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  # 1. PostgreSQL Database Service
+  db:
+    image: postgres:15-alpine # Use a lightweight official PostgreSQL image
+    container_name: brokefolio_db
+    environment:
+      # These environment variables configure the PostgreSQL instance
+      POSTGRES_DB: brokefolio     # Your database name
+      POSTGRES_USER: brokefolio_user # Your database user (recommend changing from 'user')
+      POSTGRES_PASSWORD: brokefolio_password # Your database password (CHANGE THIS FOR PRODUCTION!)
+    ports:
+      - "5432:5432" # Map host port 5432 to container port 5432
+    volumes:
+      - db_data:/var/lib/postgresql/data # Persistent data volume for database files
+    healthcheck: # Health check to ensure DB is fully ready before the app starts
+      test: ["CMD-SHELL", "pg_isready -U brokefolio_user -d brokefolio"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s # Give the DB a bit more time to start up initially
+
+  # 2. Go Backend Application Service
+  app:
+    build:
+      context: . # The Docker build context is the current directory (brokefolio/)
+      dockerfile: Dockerfile # Path to your Dockerfile within the context (the one we just created)
+    container_name: brokefolio_app
+    ports:
+      - "8080:8080" # Map host port 8080 to container port 8080
+    environment:
+      # These environment variables are passed into your Go application container.
+      # 'host=db' refers to the 'db' service defined in this docker-compose file.
+      DB_CONNECTION_STRING: "user=postgres dbname=brokefolio password=postgres host=localhost sslmode=disable"
+      JWT_SECRET_KEY: "oGLrevE1/ZbfP1EswG7hDQ=="
+      PRICE_API_KEY: "DhAJDslMdxhJQUhScpxCwa17JyJ5gPRp"
+      NEWS_API_KEY: "aa775bb992e545ebbaa72ea735caa228"
+      MAIL_APP_KEY: "osxu kppw anwn ofsc"
+      ALLOWED_ORIGINS: "http://localhost:8080,http://127.0.0.1:8080" # Adjust this based on your frontend's actual origin
+      CORS_DEBUG: "true" # Set to "false" or remove for production
+      # Add any other environment variables your Go app reads from its .env file
+      # e.g., AUTH_SECRET_KEY, API_KEY_EXTERNAL_SERVICE etc.
+    depends_on:
+      db:
+        condition: service_healthy # Ensures the 'db' service is healthy before 'app' starts
+    # If you prefer to use your local .env file during development (less common in production)
+    # uncomment the following line and ensure your .env file is at the project root.
+    env_file:
+      - ./.env
+
+volumes:
+  db_data:

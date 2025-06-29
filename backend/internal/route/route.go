@@ -10,7 +10,7 @@ import (
 var tpl *template.Template
 
 func InitTemplates() {
-	templateDir := "../../../templates"
+	templateDir := "./templates"
 	templatePattern := filepath.Join(templateDir, "*.html")
 
 	tpl = template.Must(template.ParseGlob(templatePattern))
