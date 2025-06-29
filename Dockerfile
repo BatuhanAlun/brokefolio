@@ -1,35 +1,33 @@
 # Use the official Go image as a base for building
-FROM golang:1.22 AS builder
+FROM golang:1.23.9 AS builder
 
-# Set the working directory inside the container
+# Set the working directory inside the container for the entire module
 WORKDIR /app
 
-# Copy go.mod and go.sum first to leverage Docker's caching.
-# This means if only your source code changes, but not dependencies,
-# Docker won't re-download modules.
-COPY backend/go.mod backend/go.sum ./backend/
-
-# Go into the backend directory within the container
-WORKDIR /app/backend
+# Copy go.mod and go.sum from the host's root project directory
+# into the container's /app (which is the WORKDIR)
+COPY go.mod go.sum ./
 
 # Download Go modules
+# This will download all dependencies based on go.mod and go.sum in /app
 RUN go mod download
 
-# Copy the rest of your backend source code
-# This copies everything from your local 'backend' folder into '/app/backend' in the container
-COPY backend/ .
+# Copy the entire project source code (including backend, static, templates, etc.)
+# from the host's root project directory into /app in the container.
+COPY . .
 
-# Build the Go application
-# CGO_ENABLED=0 is important for creating a statically linked binary, which is good for smaller images.
-# GOOS=linux ensures it's built for a Linux environment, which is what Docker containers typically are.
-# -o /app/brokefolio specifies the output executable name and path (will be in the root of /app)
-WORKDIR /app # Change back to /app before building to place the executable directly there
+# Build the Go application.
+# The path to main.go is now relative to the WORKDIR /app.
+# So it becomes ./backend/cmd/brokefolio/main.go
+# CGO_ENABLED=0 for static binary, GOOS=linux for container environment.
+# -o /app/brokefolio places the final executable directly at /app/brokefolio
 RUN CGO_ENABLED=0 GOOS=linux go build -o /app/brokefolio ./backend/cmd/brokefolio/main.go
 
-# --- This is a multi-stage build. We'll use a new, smaller base image for the final runtime ---
+# --- Production Stage ---
+# Use a new, smaller base image for the final runtime
 FROM alpine:latest
 
-# Install ca-certificates needed for HTTPS requests from inside the container
+# Install ca-certificates needed for HTTPS requests
 RUN apk --no-cache add ca-certificates
 
 # Set the working directory for the final image
@@ -37,6 +35,19 @@ WORKDIR /app
 
 # Copy the compiled binary from the 'builder' stage
 COPY --from=builder /app/brokefolio /app/brokefolio
+
+# Copy static assets and templates
+# These are copied from the *host* project root, as the previous COPY . . command
+# in the builder stage copied them all into the builder image, but we are copying
+# them directly from the host into the new, clean alpine image here.
+COPY static/ ./static/
+COPY templates/ ./templates/
+
+# If you have an .env file that needs to be copied into the container
+# for runtime configuration, uncomment the line below.
+# However, it's generally better to use environment variables directly
+# in Docker or Docker Compose for production secrets.
+# COPY .env ./.env
 
 # Expose the port your application listens on (assuming 8080)
 EXPOSE 8080

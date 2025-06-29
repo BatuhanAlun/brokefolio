@@ -1,1 +1,5 @@
 .env
+./db/init
+./db
+./db/init/init.sql
+
